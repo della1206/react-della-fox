@@ -1,0 +1,222 @@
+[
+  {
+    "id": 1,
+    "nama": "Raja Ampat",
+    "kategori": "Wisata Alam",
+    "gambar": "https://plus.unsplash.com/premium_photo-1661919589683-f11880119fb7?w=500&auto=format",
+    "deskripsi": "Kepulauan yang memiliki kekayaan laut tertinggi di dunia.",
+    "lokasi": { "provinsi": "Papua Barat Daya", "kota": "Waisai", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": true, "transportasi": "Speedboat", "pemandu": "Tersedia" },
+    "statistik": { "rating": 4.9, "pengunjung_bulanan": 5000, "tiket_masuk": "Rp 200.000" },
+    "tags": ["Diving", "Pantai", "Eksotis"]
+  },
+  {
+    "id": 2,
+    "nama": "Candi Borobudur",
+    "kategori": "Wisata Budaya",
+    "gambar": "/img/borobudur.webp",
+    "deskripsi": "Candi Buddha terbesar di dunia yang merupakan warisan UNESCO.",
+    "lokasi": { "provinsi": "Jawa Tengah", "kota": "Magelang", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": true, "transportasi": "Bus/Mobil", "pemandu": "Sangat Banyak" },
+    "statistik": { "rating": 4.8, "pengunjung_bulanan": 80000, "tiket_masuk": "Rp 50.000" },
+    "tags": ["Sejarah", "Edukasi", "Candi"]
+  },
+  {
+    "id": 3,
+    "nama": "Gunung Bromo",
+    "kategori": "Wisata Alam",
+    "gambar": "https://images.unsplash.com/photo-1602851688358-f72cc9e847a1?w=500&auto=format",
+    "deskripsi": "Gunung berapi aktif dengan pemandangan matahari terbit yang ikonik.",
+    "lokasi": { "provinsi": "Jawa Timur", "kota": "Probolinggo", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": true, "transportasi": "Jeep 4x4", "pemandu": "Tersedia" },
+    "statistik": { "rating": 4.7, "pengunjung_bulanan": 25000, "tiket_masuk": "Rp 50.000" },
+    "tags": ["Gunung", "Sunrise", "Hiking"]
+  },
+  {
+    "id": 4,
+    "nama": "Pantai Kuta",
+    "kategori": "Wisata Alam",
+    "gambar": "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=500&auto=format",
+    "deskripsi": "Pantai paling populer di Bali untuk berselancar dan menikmati sunset.",
+    "lokasi": { "provinsi": "Bali", "kota": "Badung", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": true, "transportasi": "Motor/Mobil", "pemandu": "Banyak" },
+    "statistik": { "rating": 4.5, "pengunjung_bulanan": 100000, "tiket_masuk": "Gratis" },
+    "tags": ["Pantai", "Surfing", "Sunset"]
+  },
+  {
+    "id": 5,
+    "nama": "Labuan Bajo",
+    "kategori": "Wisata Alam",
+    "gambar": "/img/labuan-bajo.jpg",
+    "deskripsi": "Gerbang menuju Taman Nasional Komodo dengan pemandangan bukit indah.",
+    "lokasi": { "provinsi": "Nusa Tenggara Timur", "kota": "Manggarai Barat", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": true, "transportasi": "Kapal Phinisi", "pemandu": "Wajib" },
+    "statistik": { "rating": 4.9, "pengunjung_bulanan": 15000, "tiket_masuk": "Rp 50.000" },
+    "tags": ["Komodo", "Pulau", "Hiking"]
+  },
+  {
+    "id": 6,
+    "nama": "Danau Toba",
+    "kategori": "Wisata Alam",
+    "gambar": "/img/danau-toba.jpg",
+    "deskripsi": "Danau vulkanik terbesar dengan Pulau Samosir di tengahnya.",
+    "lokasi": { "provinsi": "Sumatera Utara", "kota": "Samosir" },
+    "fasilitas": { "transportasi": "Ferry" },
+    "statistik": { "rating": 4.6, "tiket_masuk": "Rp 50.000" },
+    "tags": ["Danau", "Sejuk"]
+  },
+  {
+    "id": 7,
+    "nama": "Tanah Lot",
+    "kategori": "Wisata Budaya",
+    "gambar": "https://images.unsplash.com/photo-1539367628448-4bc5c9d171c8?w=500&auto=format",
+    "deskripsi": "Pura di atas batu karang besar yang menjorok ke laut.",
+    "lokasi": { "provinsi": "Bali", "kota": "Tabanan", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": false, "transportasi": "Mobil", "pemandu": "Tersedia" },
+    "statistik": { "rating": 4.7, "pengunjung_bulanan": 60000, "tiket_masuk": "Rp 60.000" },
+    "tags": ["Pura", "Budaya", "Sunset"]
+  },
+  {
+    "id": 8,
+    "nama": "TMII",
+    "kategori": "Wisata Edukasi",
+    "gambar": "https://images.unsplash.com/photo-1589118949245-7d38baf380d6?w=500&auto=format",
+    "deskripsi": "Rangkuman kebudayaan Indonesia dalam satu kawasan taman.",
+    "lokasi": { "provinsi": "DKI Jakarta", "kota": "Jakarta Timur", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": true, "transportasi": "Tramway", "pemandu": "Tersedia" },
+    "statistik": { "rating": 4.4, "pengunjung_bulanan": 90000, "tiket_masuk": "Rp 65.000" },
+    "tags": ["Budaya", "Museum", "Keluarga"]
+  },
+  {
+    "id": 9,
+    "nama": "Tangkuban Perahu",
+    "kategori": "Wisata Alam",
+    "gambar": "https://images.unsplash.com/photo-1555597673-b21d5c935865?w=500&auto=format",
+    "deskripsi": "Kawah gunung berapi aktif yang melegenda di Jawa Barat.",
+    "lokasi": { "provinsi": "Jawa Barat", "kota": "Bandung", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": false, "transportasi": "Mobil", "pemandu": "Tersedia" },
+    "statistik": { "rating": 4.3, "pengunjung_bulanan": 45000, "tiket_masuk": "Rp 20.000" },
+    "tags": ["Kawah", "Gunung", "Legenda"]
+  },
+  {
+    "id": 10,
+    "nama": "Museum Nasional",
+    "kategori": "Wisata Edukasi",
+    "gambar": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=500&auto=format",
+    "deskripsi": "Museum terbesar di Asia Tenggara yang menyimpan sejarah RI.",
+    "lokasi": { "provinsi": "DKI Jakarta", "kota": "Jakarta Pusat", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": false, "transportasi": "TransJakarta", "pemandu": "Ada" },
+    "statistik": { "rating": 4.6, "pengunjung_bulanan": 20000, "tiket_masuk": "Rp 45.000" },
+    "tags": ["Sejarah", "Museum", "Edukasi"]
+  },
+  {
+    "id": 11,
+    "nama": "Pantai Pink",
+    "kategori": "Wisata Alam",
+    "gambar": "/img/pantai-pink.jpg",
+    "deskripsi": "Pantai dengan pasir berwarna merah muda yang langka di dunia.",
+    "lokasi": { "provinsi": "NTB", "kota": "Lombok", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": false, "transportasi": "Boat", "pemandu": "Ada" },
+    "statistik": { "rating": 4.8, "pengunjung_bulanan": 10000, "tiket_masuk": "Rp 25.000" },
+    "tags": ["Pantai", "Langka", "Snorkeling"]
+  },
+  {
+    "id": 12,
+    "nama": "Wakatobi",
+    "kategori": "Wisata Alam",
+    "gambar": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500&auto=format",
+    "deskripsi": "Cagar biosfer dunia dengan terumbu karang yang sehat.",
+    "lokasi": { "provinsi": "Sulawesi Tenggara", "kota": "Wangi-Wangi", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": true, "transportasi": "Pesawat/Boat", "pemandu": "Tersedia" },
+    "statistik": { "rating": 4.9, "pengunjung_bulanan": 3000, "tiket_masuk": "Rp 150.000" },
+    "tags": ["Bawah Laut", "Diving", "Cagar Alam"]
+  },
+  {
+    "id": 13,
+    "nama": "Prambanan",
+    "kategori": "Wisata Budaya",
+    "gambar": "https://images.unsplash.com/photo-1601918774946-25832a4be0d6?w=500&auto=format",
+    "deskripsi": "Kompleks candi Hindu terbesar di Indonesia dari abad ke-9.",
+    "lokasi": { "provinsi": "DI Yogyakarta", "kota": "Sleman", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": true, "transportasi": "TransJogja", "pemandu": "Banyak" },
+    "statistik": { "rating": 4.8, "pengunjung_bulanan": 55000, "tiket_masuk": "Rp 50.000" },
+    "tags": ["Candi", "Hindu", "Sejarah"]
+  },
+  {
+    "id": 14,
+    "nama": "Ngarai Sianok",
+    "kategori": "Wisata Alam",
+    "gambar": "/img/ngarai-sianok.jpg",
+    "deskripsi": "Lembah curam yang menjadi ikon wisata Bukittinggi.",
+    "lokasi": { "provinsi": "Sumatera Barat", "kota": "Bukittinggi", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": true, "transportasi": "Mobil", "pemandu": "Tersedia" },
+    "statistik": { "rating": 4.5, "pengunjung_bulanan": 12000, "tiket_masuk": "Rp 35.000" },
+    "tags": ["Lembah", "Pemandangan", "Udara Segar"]
+  },
+  {
+    "id": 15,
+    "nama": "Kawah Ijen",
+    "kategori": "Wisata Alam",
+    "gambar": "img/kawah-ijen.png",
+    "deskripsi": "Satu-satunya kawah yang memiliki fenomena Blue Fire di dunia.",
+    "lokasi": { "provinsi": "Jawa Timur", "kota": "Banyuwangi", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": true, "transportasi": "Hiking", "pemandu": "Tersedia" },
+    "statistik": { "rating": 4.7, "pengunjung_bulanan": 18000, "tiket_masuk": "Rp 35.000" },
+    "tags": ["Blue Fire", "Gunung", "Belerang"]
+  },
+  {
+    "id": 16,
+    "nama": "Bunaken",
+    "kategori": "Wisata Alam",
+    "gambar": "https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?w=500&auto=format",
+    "deskripsi": "Taman laut legendaris dengan tebing bawah laut curam.",
+    "lokasi": { "provinsi": "Sulawesi Utara", "kota": "Manado", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": true, "transportasi": "Boat", "pemandu": "Tersedia" },
+    "statistik": { "rating": 4.7, "pengunjung_bulanan": 7000, "tiket_masuk": "Rp 50.000" },
+    "tags": ["Diving", "Snorkeling", "Manado"]
+  },
+  {
+    "id": 17,
+    "nama": "Batu Raden",
+    "kategori": "Wisata Alam",
+    "gambar": "https://images.unsplash.com/photo-1572449043416-55f4685c9bb7?w=500&auto=format",
+    "deskripsi": "Kawasan wisata sejuk di lereng Gunung Slamet.",
+    "lokasi": { "provinsi": "Jawa Tengah", "kota": "Banyumas", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": true, "transportasi": "Angkot/Mobil", "pemandu": "Tersedia" },
+    "statistik": { "rating": 4.2, "pengunjung_bulanan": 40000, "tiket_masuk": "Rp 25.000" },
+    "tags": ["Pegunungan", "Pemandian", "Sejuk"]
+  },
+  {
+    "id": 18,
+    "nama": "Pulau Derawan",
+    "kategori": "Wisata Alam",
+    "gambar": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500&auto=format",
+    "deskripsi": "Tempat terbaik untuk melihat penyu raksasa dan ubur-ubur.",
+    "lokasi": { "provinsi": "Kalimantan Timur", "kota": "Berau", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": true, "transportasi": "Speedboat", "pemandu": "Tersedia" },
+    "statistik": { "rating": 4.8, "pengunjung_bulanan": 4000, "tiket_masuk": "Rp 100.000" },
+    "tags": ["Penyu", "Ubur-ubur", "Pulau"]
+  },
+  {
+    "id": 19,
+    "nama": "Floating Market",
+    "kategori": "Wisata Kuliner",
+    "gambar": "https://images.unsplash.com/photo-1512152272829-e3139592d56f?w=500&auto=format",
+    "deskripsi": "Pasar terapung unik di Lembang dengan jajanan tradisional.",
+    "lokasi": { "provinsi": "Jawa Barat", "kota": "Bandung", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": false, "transportasi": "Mobil", "pemandu": "Ada" },
+    "statistik": { "rating": 4.4, "pengunjung_bulanan": 75000, "tiket_masuk": "Rp 35.000" },
+    "tags": ["Kuliner", "Keluarga", "Pasar"]
+  },
+  {
+    "id": 20,
+    "nama": "Umbul Ponggok",
+    "kategori": "Wisata Alam",
+    "gambar": "https://images.unsplash.com/photo-1502675135487-e971002a6adb?w=500&auto=format",
+    "deskripsi": "Kolam mata air jernih populer untuk foto bawah laut.",
+    "lokasi": { "provinsi": "Jawa Tengah", "kota": "Klaten", "negara": "Indonesia" },
+    "fasilitas": { "penginapan": false, "transportasi": "Mobil", "pemandu": "Ada" },
+    "statistik": { "rating": 4.6, "pengunjung_bulanan": 35000, "tiket_masuk": "Rp 25.000" },
+    "tags": ["Instagrammable", "Mata Air"]
+  }
+]
