@@ -1,0 +1,85 @@
+/**======================================================================
+=========================================================================
+Template Name: Berry - Bootstrap Admin Template
+Author: codedthemes
+Support: https://codedthemes.authordesk.app
+File: style.css
+=========================================================================
+=================================================================================== */
+
+// main framework - Variabel Awal
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/variables-dark';
+
+// Settings (Pastikan file ini ada di folder src/assets/scss/settings/)
+@import 'settings/color-variables';
+@import 'settings/theme-variables';
+@import 'settings/bootstrap-variables';
+
+// Core Bootstrap (Tanpa tulisan node_modules/)
+@import 'bootstrap/scss/maps';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/root';
+@import 'bootstrap/scss/reboot';
+@import 'bootstrap/scss/type';
+@import 'bootstrap/scss/images';
+@import 'bootstrap/scss/containers';
+@import 'bootstrap/scss/grid';
+@import 'bootstrap/scss/tables';
+@import 'bootstrap/scss/forms';
+@import 'bootstrap/scss/buttons';
+@import 'bootstrap/scss/transitions';
+@import 'bootstrap/scss/dropdown';
+@import 'bootstrap/scss/button-group';
+@import 'bootstrap/scss/nav';
+@import 'bootstrap/scss/navbar';
+@import 'bootstrap/scss/card';
+@import 'bootstrap/scss/accordion';
+@import 'bootstrap/scss/breadcrumb';
+@import 'bootstrap/scss/pagination';
+@import 'bootstrap/scss/badge';
+@import 'bootstrap/scss/alert';
+@import 'bootstrap/scss/progress';
+@import 'bootstrap/scss/list-group';
+@import 'bootstrap/scss/close';
+@import 'bootstrap/scss/toasts';
+@import 'bootstrap/scss/modal';
+@import 'bootstrap/scss/tooltip';
+@import 'bootstrap/scss/popover';
+@import 'bootstrap/scss/carousel';
+@import 'bootstrap/scss/spinners';
+@import 'bootstrap/scss/offcanvas';
+@import 'bootstrap/scss/placeholders';
+@import 'bootstrap/scss/helpers';
+
+@import 'bootstrap/scss/utilities';
+@import 'bootstrap/scss/utilities/api';
+
+// Themes (Pastikan file ini ada di folder src/assets/scss/themes/)
+@import 'themes/generic';
+@import 'themes/general';
+
+// Layouts
+@import 'themes/layouts/pc-sidebar';
+@import 'themes/layouts/pc-header';
+@import 'themes/layouts/pc-footer';
+@import 'themes/layouts/pc-common';
+
+// Widget
+@import 'themes/components/widget';
+
+// Components
+@import 'themes/components/avtar';
+@import 'themes/components/badge';
+@import 'themes/components/button';
+@import 'themes/components/dropdown';
+@import 'themes/components/card';
+@import 'themes/components/progress';
+@import 'themes/components/table';
+@import 'themes/components/tabs';
+@import 'themes/components/form';
+
+// Pages
+@import 'themes/pages/authentication';
+@import 'themes/pages/icon-pages';
