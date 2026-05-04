@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ImSpinner2 } from "react-icons/im"; // Pastikan sudah install react-icons
+import { ImSpinner2 } from "react-icons/im";
 import { BsFillExclamationDiamondFill } from "react-icons/bs";
 
-export default function Login() {
+// Tambahkan prop setIsLoggedIn di sini agar bisa diakses
+export default function Login({ setIsLoggedIn }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [dataForm, setDataForm] = useState({
-    email: "", // Username di dummyjson
+    email: "", // Ini akan diisi username 'emilys' sesuai dummyjson
     password: "",
   });
 
@@ -26,16 +27,19 @@ export default function Login() {
     setError("");
 
     try {
+      // Saya menembak API dummyjson untuk validasi login
       const response = await axios.post("https://dummyjson.com/user/login", {
         username: dataForm.email,
         password: dataForm.password,
       });
 
       if (response.status === 200) {
+        // Analisis saya: baris ini kuncinya agar tidak balik ke login lagi
+        setIsLoggedIn(true); 
         navigate("/dashboard");
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Login gagal! Periksa kembali username/password.");
+      setError(err.response?.data?.message || "Login gagal! Periksa kembali data Anda.");
     } finally {
       setLoading(false);
     }
@@ -47,6 +51,7 @@ export default function Login() {
         Welcome Back 👋
       </h2>
 
+      {/* Menampilkan pesan error kalau login gagal */}
       {error && (
         <div className="bg-red-200 mb-5 p-4 text-sm font-light text-gray-600 rounded flex items-center">
           <BsFillExclamationDiamondFill className="text-red-600 me-2 text-lg" />
@@ -54,6 +59,7 @@ export default function Login() {
         </div>
       )}
 
+      {/* Menampilkan status loading saat proses API */}
       {loading && (
         <div className="bg-gray-200 mb-5 p-4 text-sm rounded flex items-center">
           <ImSpinner2 className="me-2 animate-spin" />
@@ -87,9 +93,9 @@ export default function Login() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 disabled:bg-green-300"
+          className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 disabled:bg-gray-400"
         >
-          Login
+          {loading ? "Processing..." : "Login"}
         </button>
       </form>
     </div>

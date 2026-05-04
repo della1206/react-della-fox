@@ -1,31 +1,35 @@
+// App.jsx
 import React, { Suspense, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Loading from "./components/Loading";
-import AuthLayout from "./layouts/AuthLayout";
-import MainLayout from "./layouts/MainLayout";
-import './assets/scss/style.scss';
 
-// Lazy Loading Pages
+// Lazy Loading Halaman
+const MainLayout = React.lazy(() => import("./layouts/MainLayout"));
+const AuthLayout = React.lazy(() => import("./layouts/AuthLayout"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
-const Login = React.lazy(() => import("./pages/auth/Login"));
-const Orders = React.lazy(() => import("./pages/Orders")); 
+const Orders = React.lazy(() => import("./pages/Orders"));
 const Customers = React.lazy(() => import("./pages/Customers"));
+const Login = React.lazy(() => import("./pages/auth/Login"));
 
 export default function App() {
   const [role, setRole] = useState("Guest");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
-        
+        <Route 
+          path="/" 
+          element={isLoggedIn ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} 
+        />
+
         {/* Auth Layout */}
-        <Route element={<AuthLayout />}>
-          <Route path="/login" element={<Login />} />
+        <Route element={!isLoggedIn ? <AuthLayout /> : <Navigate to="/dashboard" />}>
+          <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
         </Route>
 
-        {/* Main Layout dengan Role Switcher */}
-        <Route element={<MainLayout role={role} setRole={setRole} />}>
+        {/* Main Layout - Tambahkan rute di sini supaya muncul */}
+        <Route element={isLoggedIn ? <MainLayout role={role} setRole={setRole} /> : <Navigate to="/login" />}>
           <Route path="/dashboard" element={<Dashboard role={role} />} />
           <Route path="/orders" element={<Orders role={role} />} />
           <Route path="/customers" element={<Customers role={role} />} />
@@ -34,4 +38,3 @@ export default function App() {
     </Suspense>
   );
 }
-
