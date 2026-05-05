@@ -1,103 +1,60 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { ImSpinner2 } from "react-icons/im";
-import { BsFillExclamationDiamondFill } from "react-icons/bs";
 
-// Tambahkan prop setIsLoggedIn di sini agar bisa diakses
 export default function Login({ setIsLoggedIn }) {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [dataForm, setDataForm] = useState({
-    email: "", // Ini akan diisi username 'emilys' sesuai dummyjson
-    password: "",
-  });
+  const [dataForm, setDataForm] = useState({ email: "", password: "" });
 
-  const handleChange = (e) => {
-    setDataForm({
-      ...dataForm,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    try {
-      // Saya menembak API dummyjson untuk validasi login
-      const response = await axios.post("https://dummyjson.com/user/login", {
-        username: dataForm.email,
-        password: dataForm.password,
-      });
-
-      if (response.status === 200) {
-        // Analisis saya: baris ini kuncinya agar tidak balik ke login lagi
-        setIsLoggedIn(true); 
-        navigate("/dashboard");
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || "Login gagal! Periksa kembali data Anda.");
-    } finally {
-      setLoading(false);
+    if (dataForm.email === "della" && dataForm.password === "dellapass") {
+      setIsLoggedIn(true);
+      navigate("/dashboard");
+    } else {
+      alert("Maaf Della, Username atau Password salah!");
     }
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-semibold text-gray-700 mb-6 text-center">
-        Welcome Back 👋
-      </h2>
+    <div className="animate-in fade-in duration-500">
+      <div className="mb-8 text-center md:text-left">
+        <h2 className="text-2xl font-bold text-gray-800">Halo Della! 👋</h2>
+        <p className="text-gray-400 text-sm mt-1">Silakan masuk untuk mengelola transaksi.</p>
+      </div>
 
-      {/* Menampilkan pesan error kalau login gagal */}
-      {error && (
-        <div className="bg-red-200 mb-5 p-4 text-sm font-light text-gray-600 rounded flex items-center">
-          <BsFillExclamationDiamondFill className="text-red-600 me-2 text-lg" />
-          {error}
-        </div>
-      )}
-
-      {/* Menampilkan status loading saat proses API */}
-      {loading && (
-        <div className="bg-gray-200 mb-5 p-4 text-sm rounded flex items-center">
-          <ImSpinner2 className="me-2 animate-spin" />
-          Mohon Tunggu...
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit}>
-        <div className="mb-5">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div>
+          <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Username</label>
           <input
             type="text"
-            name="email"
-            onChange={handleChange}
-            className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
-            placeholder="emilys"
+            className="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-[#5da5e8]/20 focus:border-[#5da5e8] transition-all outline-none text-sm"
+            placeholder="Masukkan username"
+            onChange={(e) => setDataForm({...dataForm, email: e.target.value})}
             required
           />
         </div>
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+        <div>
+          <div className="flex justify-between mb-2">
+            <label className="block text-xs font-bold text-gray-500 uppercase">Kata Sandi</label>
+            <span onClick={() => navigate("/forgot")} className="text-[#5da5e8] text-xs font-bold cursor-pointer">Lupa Sandi?</span>
+          </div>
           <input
             type="password"
-            name="password"
-            onChange={handleChange}
-            className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+            className="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-[#5da5e8]/20 focus:border-[#5da5e8] transition-all outline-none text-sm"
             placeholder="********"
+            onChange={(e) => setDataForm({...dataForm, password: e.target.value})}
             required
           />
         </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 disabled:bg-gray-400"
-        >
-          {loading ? "Processing..." : "Login"}
+
+        <button className="w-full bg-[#5da5e8] hover:bg-[#4a8ecc] text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-[#5da5e8]/30">
+          Masuk Sekarang
         </button>
       </form>
+
+      <p className="text-center mt-8 text-sm text-gray-500">
+        Belum punya akun? <span onClick={() => navigate("/register")} className="text-[#5da5e8] font-bold cursor-pointer hover:underline">Daftar Akun</span>
+      </p>
     </div>
   );
 }

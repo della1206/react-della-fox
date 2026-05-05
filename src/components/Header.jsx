@@ -3,81 +3,69 @@ import { BsList, BsSearch, BsBell, BsGear, BsSliders } from "react-icons/bs";
 
 export default function Header({ role, setRole }) {
   return (
-    <header className="bg-white px-6 py-3 flex flex-col space-y-3 border-b border-gray-100 sticky top-0 z-10 shadow-sm">
+    <header className="bg-white/80 backdrop-blur-md px-8 py-4 flex items-center justify-between border-b border-gray-100 sticky top-0 z-50 shadow-sm">
       
-      {/* Baris Pertama: Tombol Switch Role (Admin & Guest) */}
-      <div className="flex justify-between items-center py-1">
-        <h1 className="font-extrabold text-sm text-purple-600 uppercase tracking-widest">
-          BerryLaundry
-        </h1>
-        <div className="flex bg-gray-100 p-1 rounded-xl border border-gray-200 shadow-inner">
+      {/* Bagian Kiri: Toggle & Search */}
+      <div className="flex items-center space-x-6">
+        <button className="p-3 bg-[#ede7f6] text-[#5e35b1] rounded-xl hover:bg-[#5e35b1] hover:text-white transition-all">
+          <BsList size={20} />
+        </button>
+
+        <div className="hidden md:flex items-center bg-[#f8faff] border border-gray-100 rounded-2xl px-4 py-2 w-80 group focus-within:border-[#b39ddb] focus-within:bg-white transition-all">
+          <BsSearch className="text-gray-400" size={14} />
+          <input
+            type="text"
+            placeholder="Cari transaksi atau pelanggan..."
+            className="bg-transparent border-none outline-none px-3 text-sm w-full text-gray-600 placeholder-gray-400 font-medium"
+          />
+          <button className="p-1.5 bg-[#ede7f6] text-[#5e35b1] rounded-lg hover:bg-[#d1c4e9]">
+            <BsSliders size={12} />
+          </button>
+        </div>
+      </div>
+
+      {/* Bagian Kanan: Role Switch & Profile */}
+      <div className="flex items-center space-x-4">
+        {/* Switcher Role */}
+        <div className="flex bg-[#f5f5f5] p-1 rounded-xl border border-gray-200">
           <button 
             onClick={() => setRole("Admin")}
-            className={`px-6 py-1.5 text-[11px] rounded-lg transition-all duration-200 uppercase font-black ${
+            className={`px-4 py-1.5 text-[10px] rounded-lg transition-all font-black uppercase tracking-wider ${
               role === "Admin" 
-                ? "bg-purple-600 text-white shadow-lg shadow-purple-200" 
-                : "text-gray-500 hover:text-purple-600"
+                ? "bg-white text-[#5e35b1] shadow-sm" 
+                : "text-gray-400 hover:text-gray-600"
             }`}
           >
             Admin
           </button>
           <button 
             onClick={() => setRole("Guest")}
-            className={`px-6 py-1.5 text-[11px] rounded-lg transition-all duration-200 uppercase font-black ${
+            className={`px-4 py-1.5 text-[10px] rounded-lg transition-all font-black uppercase tracking-wider ${
               role === "Guest" 
-                ? "bg-purple-600 text-white shadow-lg shadow-purple-200" 
-                : "text-gray-500 hover:text-purple-600"
+                ? "bg-white text-[#5e35b1] shadow-sm" 
+                : "text-gray-400 hover:text-gray-600"
             }`}
           >
             Guest
           </button>
         </div>
-      </div>
 
-      {/* Baris Kedua: Elemen Visual Berry (Search & Profile) */}
-      <div className="flex items-center justify-between pt-1">
-        
-        {/* Bagian Kiri: Menu & Search */}
-        <div className="flex items-center space-x-4">
-          {/* Button Menu Toggle (Ungu Muda) */}
-          <button className="p-2.5 bg-purple-50 text-purple-600 rounded-xl hover:bg-purple-600 hover:text-white transition-all">
-            <BsList size={20} />
-          </button>
+        {/* Notifikasi */}
+        <button className="p-3 bg-[#f8faff] text-gray-500 rounded-xl hover:bg-[#ede7f6] hover:text-[#5e35b1] transition-all relative">
+          <BsBell size={20} />
+          <span className="absolute top-3 right-3 w-2 h-2 bg-[#f44336] rounded-full border-2 border-white"></span>
+        </button>
 
-          {/* Search Bar ala Berry */}
-          <div className="hidden md:flex items-center bg-white border border-gray-100 rounded-xl px-4 py-1.5 w-72 lg:w-96 group focus-within:border-purple-400 transition-all shadow-sm">
-            <BsSearch className="text-gray-300" size={14} />
-            <input
-              type="text"
-              placeholder="Search here. . ."
-              className="bg-transparent border-none outline-none px-3 py-1.5 text-xs w-full text-gray-600 placeholder-gray-400"
+        {/* Profil Mini */}
+        <div className="flex items-center space-x-3 bg-[#e3f2fd] pl-2 pr-4 py-1.5 rounded-full border border-[#bbdefb] hover:bg-[#bbdefb]/50 cursor-pointer transition-all">
+          <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white shadow-sm bg-gray-200">
+            <img
+              src="https://ui-avatars.com/api/?name=Emily+Selman&background=5e35b1&color=fff" 
+              alt="User"
+              className="w-full h-full object-cover"
             />
-            {/* Tombol Filter di ujung Search */}
-            <button className="p-1.5 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-colors">
-              <BsSliders size={12} />
-            </button>
           </div>
-        </div>
-
-        {/* Bagian Kanan: Notifikasi & Profil User */}
-        <div className="flex items-center space-x-3">
-          {/* Notifikasi Lonceng */}
-          <button className="p-2.5 bg-purple-50 text-purple-600 rounded-xl hover:bg-purple-100 transition-all relative">
-            <BsBell size={20} />
-            <span className="absolute top-2 right-2.5 w-2 h-2 bg-orange-500 rounded-full border-2 border-white"></span>
-          </button>
-
-          {/* Profil User (Pill Shape ala Berry) */}
-          <div className="flex items-center space-x-2 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100 hover:bg-blue-100 cursor-pointer transition-all shadow-sm">
-            <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white shadow-sm">
-               <img
-                src="img/dellaaa.JPG" 
-                alt="User"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <BsGear className="text-blue-600" size={18} />
-          </div>
+          <BsGear className="text-[#1e88e5]" size={18} />
         </div>
       </div>
     </header>
