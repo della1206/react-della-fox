@@ -1,15 +1,24 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BsSpeedometer2, BsClipboardData, BsPeople } from "react-icons/bs";
+import { BsSpeedometer2, BsClipboardData, BsPeople, BsBoxSeam, BsExclamationTriangle, BsLock, BsSlashCircle } from "react-icons/bs";
 
 export default function Sidebar() {
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
 
+  // Menu Utama Laundry
   const menuItems = [
     { name: "Dashboard", path: "/dashboard", icon: <BsSpeedometer2 /> },
     { name: "Orders", path: "/orders", icon: <BsClipboardData /> },
     { name: "Customers", path: "/customers", icon: <BsPeople /> },
+    { name: "Products", path: "/products", icon: <BsBoxSeam /> }, // Menu Baru
+  ];
+
+  // Menu Error Pages untuk kebutuhan Praktikum
+  const errorItems = [
+    { name: "Error 400", path: "/error-400", icon: <BsExclamationTriangle /> },
+    { name: "Error 401", path: "/error-401", icon: <BsLock /> },
+    { name: "Error 403", path: "/error-403", icon: <BsSlashCircle /> },
   ];
 
   return (
@@ -21,13 +30,12 @@ export default function Sidebar() {
         </h1>
       </div>
 
-      <div className="px-4">
+      <div className="px-4 overflow-y-auto flex-grow">
+        {/* SECTION: MENU UTAMA */}
         <p className="text-[11px] font-bold text-gray-400 uppercase tracking-[0.2em] px-4 mb-4">
           Menu Utama
         </p>
-
-        {/* Navigation Links */}
-        <nav className="flex flex-col space-y-2">
+        <nav className="flex flex-col space-y-1 mb-8">
           {menuItems.map((item) => (
             <Link
               key={item.name}
@@ -45,9 +53,32 @@ export default function Sidebar() {
             </Link>
           ))}
         </nav>
+
+        {/* SECTION: ERROR PAGES */}
+        <p className="text-[11px] font-bold text-gray-400 uppercase tracking-[0.2em] px-4 mb-4">
+          Error Pages
+        </p>
+        <nav className="flex flex-col space-y-1">
+          {errorItems.map((item) => (
+            <Link
+              key={item.name}
+              to={item.path}
+              className={`flex items-center space-x-3 px-4 py-3 rounded-2xl transition-all duration-200 group ${
+                isActive(item.path)
+                  ? "bg-red-50 text-red-600"
+                  : "text-gray-600 hover:bg-red-50 hover:text-red-600"
+              }`}
+            >
+              <span className={`text-xl ${isActive(item.path) ? "text-red-600" : "text-gray-400 group-hover:text-red-600"}`}>
+                {item.icon}
+              </span>
+              <span className="font-semibold text-sm">{item.name}</span>
+            </Link>
+          ))}
+        </nav>
       </div>
 
-      {/* Banner Bantuan di Bawah Sidebar */}
+      {/* Banner Bantuan */}
       <div className="mt-auto p-6">
         <div className="bg-[#e3f2fd] rounded-[24px] p-5 border border-[#bbdefb]">
           <p className="text-sm font-bold text-[#1565c0] mb-1">Butuh Bantuan?</p>
