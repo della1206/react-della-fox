@@ -3,8 +3,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Loading from "./components/Loading";
 
 // Lazy Loading - Pastikan nama file di folder 'pages' sama persis (Besar/Kecil)
-const MainLayout = React.lazy(() => import("./layouts/MainLayout"));
-const AuthLayout = React.lazy(() => import("./layouts/AuthLayout"));
+const MainLayout = React.lazy(() => import("./Layouts/MainLayout"));
+const AuthLayout = React.lazy(() => import("./Layouts/AuthLayout"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Orders = React.lazy(() => import("./pages/Orders"));
 const Customers = React.lazy(() => import("./pages/Customers"));
@@ -22,6 +22,7 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return localStorage.getItem("isLoggedIn") === "true";
   });
+
 
   // Simpan status ke localStorage setiap kali isLoggedIn berubah
   useEffect(() => {
