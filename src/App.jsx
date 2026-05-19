@@ -14,6 +14,8 @@ const ErrorPage = React.lazy(() => import("./pages/ErrorPage"));
 const Login = React.lazy(() => import("./pages/auth/Login"));
 const Register = React.lazy(() => import("./pages/auth/Register"));
 const Forgot = React.lazy(() => import("./pages/auth/Forgot"));
+// Tambahan Lazy Load untuk halaman Playground Components (Pertemuan 10)
+const Components = React.lazy(() => import("./pages/Components"));
 
 export default function App() {
   const [role, setRole] = useState("Admin"); // Set default ke Admin untuk development
@@ -52,6 +54,8 @@ export default function App() {
           <Route path="/customers" element={<Customers role={role} />} />
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetail />} />
+          {/* Rute Baru Halaman Playground Components */}
+          <Route path="/components" element={<Components />} />
 
           {/* Rute Error - errorCode dikirim sebagai string agar aman */}
           <Route path="/error-400" element={<ErrorPage errorCode="400" title="Bad Request" />} />

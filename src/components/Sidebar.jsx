@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BsSpeedometer2, BsClipboardData, BsPeople, BsBoxSeam, BsExclamationTriangle, BsLock, BsSlashCircle } from "react-icons/bs";
+import { BsSpeedometer2, BsClipboardData, BsPeople, BsBoxSeam, BsExclamationTriangle, BsLock, BsSlashCircle, BsPuzzle } from "react-icons/bs";
 
 export default function Sidebar() {
   const location = useLocation();
@@ -11,7 +11,8 @@ export default function Sidebar() {
     { name: "Dashboard", path: "/dashboard", icon: <BsSpeedometer2 /> },
     { name: "Orders", path: "/orders", icon: <BsClipboardData /> },
     { name: "Customers", path: "/customers", icon: <BsPeople /> },
-    { name: "Products", path: "/products", icon: <BsBoxSeam /> }, // Menu Baru
+    { name: "Products", path: "/products", icon: <BsBoxSeam /> }, 
+    { name: "Components", path: "/components", icon: <BsPuzzle /> }, // Tambahan Menu Baru Pertemuan 10
   ];
 
   // Menu Error Pages untuk kebutuhan Praktikum
