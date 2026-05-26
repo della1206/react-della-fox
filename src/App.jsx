@@ -14,19 +14,16 @@ const ErrorPage = React.lazy(() => import("./pages/ErrorPage"));
 const Login = React.lazy(() => import("./pages/auth/Login"));
 const Register = React.lazy(() => import("./pages/auth/Register"));
 const Forgot = React.lazy(() => import("./pages/auth/Forgot"));
-// Tambahan Lazy Load untuk halaman Playground Components (Pertemuan 10)
 const Components = React.lazy(() => import("./pages/Components"));
+const FiturCrm = React.lazy(() => import("./pages/FiturCrm"));
 
 export default function App() {
-  const [role, setRole] = useState("Admin"); // Set default ke Admin untuk development
+  const [role, setRole] = useState("Admin"); 
   
-  // Ambil status login dari localStorage supaya tidak ter-logout saat refresh
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return localStorage.getItem("isLoggedIn") === "true";
   });
 
-
-  // Simpan status ke localStorage setiap kali isLoggedIn berubah
   useEffect(() => {
     localStorage.setItem("isLoggedIn", isLoggedIn);
   }, [isLoggedIn]);
@@ -54,16 +51,14 @@ export default function App() {
           <Route path="/customers" element={<Customers role={role} />} />
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetail />} />
-          {/* Rute Baru Halaman Playground Components */}
           <Route path="/components" element={<Components />} />
+          <Route path="/fitur-crm" element={<FiturCrm />} />
 
-          {/* Rute Error - errorCode dikirim sebagai string agar aman */}
           <Route path="/error-400" element={<ErrorPage errorCode="400" title="Bad Request" />} />
           <Route path="/error-401" element={<ErrorPage errorCode="401" title="Unauthorized" />} />
           <Route path="/error-403" element={<ErrorPage errorCode="403" title="Forbidden" />} />
         </Route>
 
-        {/* Catch-all: Jika URL salah, kembali ke depan */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>
