@@ -1,18 +1,29 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BsSpeedometer2, BsClipboardData, BsPeople, BsBoxSeam, BsExclamationTriangle, BsLock, BsSlashCircle, BsPuzzle } from "react-icons/bs";
+import { 
+  BsSpeedometer2, 
+  BsClipboardData, 
+  BsPeople, 
+  BsBoxSeam, 
+  BsExclamationTriangle, 
+  BsLock, 
+  BsSlashCircle, 
+  BsPuzzle,
+  BsLightningCharge // Tambahan icon baru untuk Fitur XYZ
+} from "react-icons/bs";
 
 export default function Sidebar() {
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
 
-  // Menu Utama Laundry
+  // Menu Utama Laundry + Penambahan Fitur XYZ sesuai modul
   const menuItems = [
     { name: "Dashboard", path: "/dashboard", icon: <BsSpeedometer2 /> },
     { name: "Orders", path: "/orders", icon: <BsClipboardData /> },
     { name: "Customers", path: "/customers", icon: <BsPeople /> },
     { name: "Products", path: "/products", icon: <BsBoxSeam /> }, 
-    { name: "Components", path: "/components", icon: <BsPuzzle /> }, // Tambahan Menu Baru Pertemuan 10
+    { name: "Components", path: "/components", icon: <BsPuzzle /> }, 
+    { name: "Fitur CRM", path: "/fitur-crm", icon: <BsPuzzle /> },
   ];
 
   // Menu Error Pages untuk kebutuhan Praktikum
