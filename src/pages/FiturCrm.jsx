@@ -39,7 +39,6 @@ export default function FiturCrm() {
         {/* Box Kontainer Utama */}
         <div className="w-full p-6 bg-white border border-gray-200 rounded-2xl shadow-sm space-y-6 text-left mt-4">
           
-          {/* SECTION 1: DIALOG & SELECT */}
           <div className="flex items-center justify-between w-full">
             <div>
               <p className="font-semibold text-gray-800 text-lg">Database Pelanggan & Member</p>
