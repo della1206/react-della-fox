@@ -52,7 +52,7 @@ export default function App() {
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/components" element={<Components />} />
-          <Route path="/fitur-crm" element={<FiturCrm />} />
+          <Route path="/pelanggan" element={<FiturCrm />} />
 
           <Route path="/error-400" element={<ErrorPage errorCode="400" title="Bad Request" />} />
           <Route path="/error-401" element={<ErrorPage errorCode="401" title="Unauthorized" />} />

@@ -23,7 +23,7 @@ export default function Sidebar() {
     { name: "Customers", path: "/customers", icon: <BsPeople /> },
     { name: "Products", path: "/products", icon: <BsBoxSeam /> }, 
     { name: "Components", path: "/components", icon: <BsPuzzle /> }, 
-    { name: "Fitur CRM", path: "/fitur-crm", icon: <BsPuzzle /> },
+    { name: "Pelanggan ", path: "/Pelanggan", icon: <BsPeople /> },
   ];
 
   // Menu Error Pages untuk kebutuhan Praktikum
