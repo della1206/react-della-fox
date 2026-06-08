@@ -20,7 +20,6 @@ export default function Sidebar() {
   const menuItems = [
     { name: "Dashboard", path: "/dashboard", icon: <BsSpeedometer2 /> },
     { name: "Orders", path: "/orders", icon: <BsClipboardData /> },
-    { name: "Customers", path: "/customers", icon: <BsPeople /> },
     { name: "Products", path: "/products", icon: <BsBoxSeam /> }, 
     { name: "Components", path: "/components", icon: <BsPuzzle /> }, 
     { name: "Pelanggan ", path: "/Pelanggan", icon: <BsPeople /> },

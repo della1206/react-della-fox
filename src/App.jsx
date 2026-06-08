@@ -7,7 +7,6 @@ const MainLayout = React.lazy(() => import("./Layouts/MainLayout"));
 const AuthLayout = React.lazy(() => import("./Layouts/AuthLayout"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Orders = React.lazy(() => import("./pages/Orders"));
-const Customers = React.lazy(() => import("./pages/Customers"));
 const Products = React.lazy(() => import("./pages/Products")); 
 const ProductDetail = React.lazy(() => import("./pages/ProductDetail"));
 const ErrorPage = React.lazy(() => import("./pages/ErrorPage")); 
@@ -48,7 +47,6 @@ export default function App() {
         <Route element={isLoggedIn ? <MainLayout role={role} setRole={setRole} /> : <Navigate to="/login" replace />}>
           <Route path="/dashboard" element={<Dashboard role={role} />} />
           <Route path="/orders" element={<Orders role={role} />} />
-          <Route path="/customers" element={<Customers role={role} />} />
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/components" element={<Components />} />
