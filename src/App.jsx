@@ -1,8 +1,10 @@
 import React, { Suspense, useState, useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom"; // <-- Ditambahkan useLocation
 import Loading from "./components/Loading";
+import Navbar from "./components/Navbar"; // <-- Ditambahkan impor Navbar Komponen Global
 
-// Lazy Loading - Pastikan nama file di folder 'pages' sama persis (Besar/Kecil)
+const Guest = React.lazy(() => import("./pages/Guest"));
+const OrderPage = React.lazy(() => import("./pages/OrderPage"));
 const MainLayout = React.lazy(() => import("./Layouts/MainLayout"));
 const AuthLayout = React.lazy(() => import("./Layouts/AuthLayout"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
@@ -15,9 +17,11 @@ const Register = React.lazy(() => import("./pages/auth/Register"));
 const Forgot = React.lazy(() => import("./pages/auth/Forgot"));
 const Components = React.lazy(() => import("./pages/Components"));
 const FiturCrm = React.lazy(() => import("./pages/FiturCrm"));
+const AdminUser = React.lazy(() => import("./pages/AdminUser"));
 
 export default function App() {
   const [role, setRole] = useState("Admin"); 
+  const location = useLocation(); // <-- Ditambahkan untuk melacak posisi halaman aktif
   
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return localStorage.getItem("isLoggedIn") === "true";
@@ -27,23 +31,27 @@ export default function App() {
     localStorage.setItem("isLoggedIn", isLoggedIn);
   }, [isLoggedIn]);
 
+  // Kondisi: Navbar hanya akan ikut muncul di halaman publik luar saja (Halaman Guest & Formulir Order)
+  const showNavbar = location.pathname === "/" || location.pathname === "/pesan";
+
   return (
     <Suspense fallback={<Loading />}>
-      <Routes>
-        {/* Jalur masuk utama */}
-        <Route 
-          path="/" 
-          element={isLoggedIn ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />} 
-        />
+      {/* Jika showNavbar cocok, komponen menu navigasi akan selalu ikut nempel di atas */}
+      {showNavbar && <Navbar />}
 
-        {/* Grup rute untuk yang belum login */}
-        <Route element={!isLoggedIn ? <AuthLayout /> : <Navigate to="/dashboard" replace />}>
+      <Routes>
+        {/* Halaman utama publik */}
+        <Route path="/" element={<Guest />} />
+        <Route path="/pesan" element={<OrderPage />} />
+
+        {/* Halaman Auth - Bebas hambatan, tidak mental sebelum login */}
+        <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot" element={<Forgot />} />
         </Route>
 
-        {/* Grup rute utama (Berisi Sidebar) */}
+        {/* Proteksi halaman internal dashboard admin */}
         <Route element={isLoggedIn ? <MainLayout role={role} setRole={setRole} /> : <Navigate to="/login" replace />}>
           <Route path="/dashboard" element={<Dashboard role={role} />} />
           <Route path="/orders" element={<Orders role={role} />} />
@@ -51,6 +59,7 @@ export default function App() {
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/components" element={<Components />} />
           <Route path="/pelanggan" element={<FiturCrm />} />
+          <Route path="/admin-user" element={<AdminUser />} />  
 
           <Route path="/error-400" element={<ErrorPage errorCode="400" title="Bad Request" />} />
           <Route path="/error-401" element={<ErrorPage errorCode="401" title="Unauthorized" />} />
