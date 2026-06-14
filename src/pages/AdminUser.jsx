@@ -1,124 +1,196 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { userAPI } from "../services/userAPI";
+import GenericTable from "../components/GenericTable";
+import AlertBox from "../components/AlertBox";
+import LoadingSpinner from "../components/LoadingSpinner";
+import EmptyState from "../components/EmptyState";
 
 export default function AdminUser() {
-  // Data simulasi user/admin di Berry Laundry
-  const [users, setUsers] = useState([
-    { id: 1, nama: "Della Admin", email: "della@laundry.com", role: "Super Admin", status: "Aktif" },
-    { id: 2, nama: "Budi Kasir", email: "budi.kasir@laundry.com", role: "Kasir", status: "Aktif" },
-    { id: 3, nama: "Siti Kurir", email: "siti.kurir@laundry.com", role: "Kurir", status: "Istirahat" },
-  ]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  // State untuk form tambah user sederhana
-  const [form, setForm] = useState({ nama: "", email: "", role: "Kasir" });
+  // State untuk form tambah user manual oleh admin
+  const [dataForm, setDataForm] = useState({
+    nama: "",
+    email: "",
+    password: "",
+  });
 
-  const handleTambahUser = (e) => {
+  // Ambil data user dari Supabase saat halaman dimuat
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const loadUsers = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      const data = await userAPI.fetchUsers();
+      setUsers(data);
+    } catch (err) {
+      setError("Gagal memuat daftar pengguna dari Supabase.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setDataForm({ ...dataForm, [name]: value });
+  };
+
+  // Tambah User Baru via Dashboard Admin (Create)
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.nama || !form.email) return alert("Lengkapi data user baru!");
-    
-    const newUser = {
-      id: users.length + 1,
-      nama: form.nama,
-      email: form.email,
-      role: form.role,
-      status: "Aktif"
-    };
+    try {
+      setLoading(true);
+      setError("");
+      setSuccess("");
 
-    setUsers([...users, newUser]);
-    setForm({ nama: "", email: "", role: "Kasir" });
-    alert("User baru berhasil ditambahkan!");
+      // SINKRONISASI: Menggunakan createUser sesuai dengan yang ada di userAPI.js
+      await userAPI.createUser(dataForm);
+
+      setSuccess("Pengguna baru berhasil ditambahkan ke database!");
+      setDataForm({ nama: "", email: "", password: "" }); // Reset form
+
+      setTimeout(() => setSuccess(""), 3000);
+      loadUsers(); // Refresh data tabel otomatis
+    } catch (err) {
+      setError(`Gagal menambahkan pengguna: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Hapus User dari Database (Delete)
+  const handleDelete = async (id, nama) => {
+    const konfirmasi = window.confirm(`Apakah Anda yakin ingin menghapus akun ${nama}?`);
+    if (!konfirmasi) return;
+
+    try {
+      setLoading(true);
+      setError("");
+      setSuccess("");
+
+      await userAPI.deleteUser(id);
+
+      setSuccess(`Akun ${nama} berhasil dihapus!`);
+      setTimeout(() => setSuccess(""), 3000);
+      loadUsers(); // Refresh data tabel otomatis
+    } catch (err) {
+      setError(`Gagal menghapus pengguna: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="p-6 space-y-6 font-sans animate-in fade-in duration-300">
-      {/* HEADER HALAMAN */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-gray-100 pb-4">
+    <div className="max-w-5xl mx-auto p-6 animate-in fade-in duration-300">
+      <div className="mb-6 flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-black text-gray-800 tracking-tight">Manajemen Admin & User</h2>
-          <p className="text-gray-400 text-xs mt-1">Kelola hak akses dan staf operasional Berry Laundry.</p>
+          <h2 className="text-3xl font-black text-gray-800">Manajemen Pengguna</h2>
+          <p className="text-gray-400 text-xs mt-1">Kelola hak akses kontrol akun Berry Laundry langsung dari Supabase.</p>
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* KANAN: FORM TAMBAH USER */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-fit">
-          <h3 className="font-bold text-gray-800 text-sm mb-4">Tambah Staf Baru ✨</h3>
-          <form onSubmit={handleTambahUser} className="space-y-4">
+      {/* Alert Notifikasi Status */}
+      {error && <AlertBox type="error">{error}</AlertBox>}
+      {success && <AlertBox type="success">{success}</AlertBox>}
+
+      <div className="grid lg:grid-cols-12 gap-8 items-start">
+        {/* Form Tambah User Baru (Kiri) */}
+        <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-blue-100 shadow-sm space-y-4">
+          <h3 className="text-sm font-black text-gray-700 uppercase tracking-wider mb-2">Tambah Operator Baru</h3>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Nama Lengkap</label>
               <input
                 type="text"
-                value={form.nama}
-                onChange={(e) => setForm({ ...form, nama: e.target.value })}
-                placeholder="Nama Staf"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-[#5da5e8]"
+                name="nama"
+                disabled={loading}
+                value={dataForm.nama}
+                onChange={handleChange}
+                placeholder="Nama Lengkap"
+                required
+                className="w-full p-3 bg-gray-50 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#5da5e8] focus:border-transparent text-xs font-semibold transition-all disabled:opacity-50"
               />
             </div>
             <div>
-              <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Email</label>
               <input
-                type="email"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                placeholder="email@laundry.com"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-[#5da5e8]"
+                type="text"
+                name="email"
+                disabled={loading}
+                value={dataForm.email}
+                onChange={handleChange}
+                placeholder="Username / Email"
+                required
+                className="w-full p-3 bg-gray-50 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#5da5e8] focus:border-transparent text-xs font-semibold transition-all disabled:opacity-50"
               />
             </div>
             <div>
-              <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Role / Jabatan</label>
-              <select
-                value={form.role}
-                onChange={(e) => setForm({ ...form, role: e.target.value })}
-                className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-[#5da5e8]"
-              >
-                <option>Kasir</option>
-                <option>Kurir</option>
-                <option>Admin Utama</option>
-              </select>
+              <input
+                type="password"
+                name="password"
+                disabled={loading}
+                value={dataForm.password}
+                onChange={handleChange}
+                placeholder="Password"
+                required
+                className="w-full p-3 bg-gray-50 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#5da5e8] focus:border-transparent text-xs font-semibold transition-all disabled:opacity-50"
+              />
             </div>
-            <button className="w-full bg-[#5da5e8] hover:bg-[#4a8ecc] text-white font-bold py-3 rounded-xl text-xs transition-all shadow-md shadow-[#5da5e8]/20">
-              Simpan Staf
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-[#5da5e8] hover:bg-[#4a8ecc] text-white font-bold py-3 rounded-2xl text-xs uppercase tracking-wider shadow-md shadow-blue-100 transition-all transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 cursor-pointer"
+            >
+              {loading ? "Memproses..." : "Simpan Akun"}
             </button>
           </form>
         </div>
 
-        {/* KIRI: TABEL DAFTAR USER */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="p-4 border-b border-gray-50 bg-gray-50/50">
-            <h3 className="font-bold text-gray-700 text-xs">Daftar Pengguna Aktif</h3>
+        {/* Tabel List User dari Supabase (Kanan) */}
+        <div className="lg:col-span-8 bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-50">
+            <h3 className="font-bold text-sm text-gray-800">Daftar Akun Terdaftar ({users.length})</h3>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-gray-100 bg-gray-50/30 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                  <th className="py-3 px-4">Nama Staf</th>
-                  <th className="py-3 px-4">Role</th>
-                  <th className="py-3 px-4">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50 text-xs text-gray-700">
-                {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="py-3.5 px-4">
-                      <div className="font-bold text-gray-800">{user.nama}</div>
-                      <div className="text-[10px] text-gray-400">{user.email}</div>
+
+          {/* Kondisi Loading Status */}
+          {loading && <LoadingSpinner text="Sinkronisasi data Supabase..." />}
+
+          {/* Kondisi Data Kosong */}
+          {!loading && users.length === 0 && (
+            <EmptyState text="Belum ada data user terdaftar di Supabase." />
+          )}
+
+          {/* Tampilkan Tabel hanya jika data di atas 0 */}
+          {!loading && users.length > 0 && (
+            <div className="overflow-x-auto">
+              <GenericTable
+                columns={["No", "Nama Pengguna", "Username / Email", "Kredensial Sandi", "Aksi"]}
+                data={users}
+                renderRow={(user, index) => (
+                  <>
+                    <td className="px-6 py-4 font-bold text-gray-500 text-center">{index + 1}.</td>
+                    <td className="px-6 py-4 font-bold text-gray-800">{user.nama}</td>
+                    <td className="px-6 py-4 text-gray-600 font-medium">{user.email}</td>
+                    <td className="px-6 py-4 text-xs font-mono text-gray-400 bg-gray-50/50 rounded-xl px-2 py-1">{user.password}</td>
+                    <td className="px-6 py-4 text-center">
+                      <button
+                        onClick={() => handleDelete(user.id, user.nama)}
+                        disabled={loading}
+                        className="px-3 py-1.5 bg-red-50 text-red-500 font-bold text-xs rounded-xl hover:bg-red-500 hover:text-white transition-all transform active:scale-95 cursor-pointer disabled:opacity-50"
+                      >
+                        Hapus
+                      </button>
                     </td>
-                    <td className="py-3.5 px-4">
-                      <span className="bg-blue-50 text-blue-600 px-2.5 py-1 rounded-md font-semibold text-[10px]">
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${
-                        user.status === "Aktif" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
-                      }`}>
-                        {user.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                  </>
+                )}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
