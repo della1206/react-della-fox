@@ -238,7 +238,7 @@ export default function Guest() {
               </span> 
               <br />
               <span className="text-blue-600 inline-block hover:scale-105 transition-transform duration-300" style={{animation: 'slideInLeft 0.6s ease-out 0.2s both'}}>
-                Laundry 🧺
+                Laundry Della🧺
               </span>
             </h1>
           </div>
