@@ -27,6 +27,8 @@ export default function Navbar({ activeSection, onNavClick }) {
 
   return (
     <nav className="sticky top-0 bg-white/90 backdrop-blur-md shadow-sm z-40 px-6 py-4 flex justify-between items-center max-w-7xl mx-auto rounded-full mt-4 border border-blue-100 transition-all duration-300 hover:shadow-lg">
+      
+      {/* Logo Group */}
       <div 
         onClick={() => navigate("/")} 
         className="flex items-center gap-2 font-black text-xl text-[#5da5e8] tracking-tight transform hover:scale-105 transition-all duration-300 cursor-pointer group"
@@ -35,6 +37,7 @@ export default function Navbar({ activeSection, onNavClick }) {
         <span className="bg-gradient-to-r from-[#5da5e8] to-[#4a8ecc] bg-clip-text text-transparent">Berry Laundry</span>
       </div>
       
+      {/* Menu Navigasi Tengah dengan Fitur Scroll Anchor */}
       <div className="hidden md:flex gap-6 font-medium">
         {navItems.map((item, idx) => (
           <a 
@@ -55,7 +58,9 @@ export default function Navbar({ activeSection, onNavClick }) {
         ))}
       </div>
       
+      {/* Bagian Tombol Kanan */}
       <div className="flex gap-4 items-center">
+        {/* Tombol Masuk Admin */}
         <button 
           onClick={() => navigate("/login")} 
           className="font-bold text-gray-600 hover:text-[#5da5e8] text-sm transition-all duration-300 cursor-pointer transform hover:scale-110 active:scale-95 group"
@@ -65,9 +70,11 @@ export default function Navbar({ activeSection, onNavClick }) {
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#5da5e8] transition-all duration-300 group-hover:w-full"></span>
           </span>
         </button>
+        
+        {/* FIX MUTLAK: Klik tombol ini langsung memisahkan user menuju Login Member khusus */}
         <button 
-          onClick={() => navigate("/pesan")} 
-          className="bg-gradient-to-r from-[#5da5e8] to-[#4a8ecc] hover:from-[#4a8ecc] hover:to-[#3d7ab3] text-white px-5 py-2.5 rounded-full font-bold text-xs shadow-md shadow-blue-100 transform hover:scale-105 hover:-translate-y-0.5 active:scale-95 transition-all duration-300"
+          onClick={() => navigate("/login-member")} 
+          className="bg-gradient-to-r from-[#5da5e8] to-[#4a8ecc] hover:from-[#4a8ecc] hover:to-[#3d7ab3] text-white px-5 py-2.5 rounded-full font-bold text-xs shadow-md shadow-blue-100 transform hover:scale-105 hover:-translate-y-0.5 active:scale-95 transition-all duration-300 cursor-pointer"
         >
           Pesan Sekarang &rarr;
         </button>

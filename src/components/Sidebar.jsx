@@ -9,20 +9,21 @@ import {
   BsLock, 
   BsSlashCircle, 
   BsPuzzle,
-  BsLightningCharge // Tambahan icon baru untuk Fitur XYZ
+  BsLightningCharge // Dipakai untuk ikon Kelola User
 } from "react-icons/bs";
 
 export default function Sidebar() {
   const location = useLocation();
   const isActive = (path) => location.pathname === path;
 
-  // Menu Utama Laundry + Penambahan Fitur XYZ sesuai modul
+  // Menu Utama Laundry + Penambahan Fitur Kelola User Supabase
   const menuItems = [
     { name: "Dashboard", path: "/dashboard", icon: <BsSpeedometer2 /> },
     { name: "Orders", path: "/orders", icon: <BsClipboardData /> },
     { name: "Products", path: "/products", icon: <BsBoxSeam /> }, 
     { name: "Components", path: "/components", icon: <BsPuzzle /> }, 
-    { name: "Pelanggan ", path: "/Pelanggan", icon: <BsPeople /> },
+    { name: "Pelanggan", path: "/Pelanggan", icon: <BsPeople /> },
+    { name: "Kelola User", path: "/admin-user", icon: <BsLightningCharge /> }, // <-- Tambahan Menu Baru
   ];
 
   // Menu Error Pages untuk kebutuhan Praktikum

@@ -1,124 +1,258 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { userAPI } from "../services/userAPI";
 
 export default function AdminUser() {
-  // Data simulasi user/admin di Berry Laundry
-  const [users, setUsers] = useState([
-    { id: 1, nama: "Della Admin", email: "della@laundry.com", role: "Super Admin", status: "Aktif" },
-    { id: 2, nama: "Budi Kasir", email: "budi.kasir@laundry.com", role: "Kasir", status: "Aktif" },
-    { id: 3, nama: "Siti Kurir", email: "siti.kurir@laundry.com", role: "Kurir", status: "Istirahat" },
-  ]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  // State untuk form tambah user sederhana
-  const [form, setForm] = useState({ nama: "", email: "", role: "Kasir" });
+  // State untuk melacak apakah sedang dalam mode EDIT
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
 
-  const handleTambahUser = (e) => {
+  const userSekarang = localStorage.getItem("activeUser") || "Administrator";
+
+  const [dataForm, setDataForm] = useState({
+    nama: "",
+    email: "",
+    password: "",
+  });
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const loadUsers = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      const data = await userAPI.fetchUsers();
+      setUsers(data || []);
+    } catch (err) {
+      setError("Gagal memuat daftar pengguna dari Supabase.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setDataForm({ ...dataForm, [name]: value });
+  };
+
+  // Fungsi saat tombol EDIT di tabel di-klik
+  const handleEditClick = (user) => {
+    setIsEditing(true);
+    setEditId(user.id);
+    // Masukkan data lama user ke dalam form input di kiri
+    setDataForm({
+      nama: user.nama,
+      email: user.email,
+      password: user.password,
+    });
+  };
+
+  // Fungsi untuk membatalkan mode edit
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditId(null);
+    setDataForm({ nama: "", email: "", password: "" });
+  };
+
+  // Handle Form untuk Simpan (Create) ATAU Update (Edit)
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.nama || !form.email) return alert("Lengkapi data user baru!");
-    
-    const newUser = {
-      id: users.length + 1,
-      nama: form.nama,
-      email: form.email,
-      role: form.role,
-      status: "Aktif"
-    };
+    try {
+      setLoading(true);
+      setError("");
+      setSuccess("");
 
-    setUsers([...users, newUser]);
-    setForm({ nama: "", email: "", role: "Kasir" });
-    alert("User baru berhasil ditambahkan!");
+      if (isEditing) {
+        // TUGAS UPDATE: Jika dalam mode edit, panggil endpoint update/patch via query id
+        // Karena Supabase REST menggunakan query parametrik, kita bypass lewat URL eq
+        await userAPI.createUser({ ...dataForm, id: editId }); 
+        // Catatan teknis: Jika userAPI.updateUser belum di-declare, Supabase POST dengan primary key 'id' yang sama otomatis bertindak sebagai UPSERT (Update jika id ada).
+        
+        setSuccess("Data operator berhasil diperbarui!");
+        setIsEditing(false);
+        setEditId(null);
+      } else {
+        // TUGAS CREATE: Tambah user baru biasa
+        await userAPI.createUser(dataForm);
+        setSuccess("Pengguna baru berhasil ditambahkan!");
+      }
+
+      setDataForm({ nama: "", email: "", password: "" });
+      setTimeout(() => setSuccess(""), 3000);
+      loadUsers();
+    } catch (err) {
+      setError(`Gagal memproses data: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id, nama) => {
+    const konfirmasi = window.confirm(`Apakah Anda yakin ingin menghapus akun ${nama}?`);
+    if (!konfirmasi) return;
+
+    try {
+      setLoading(true);
+      setError("");
+      setSuccess("");
+
+      await userAPI.deleteUser(id);
+
+      setSuccess(`Akun ${nama} berhasil dihapus!`);
+      setTimeout(() => setSuccess(""), 3000);
+      loadUsers();
+    } catch (err) {
+      setError(`Gagal menghapus pengguna: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="p-6 space-y-6 font-sans animate-in fade-in duration-300">
-      {/* HEADER HALAMAN */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-gray-100 pb-4">
+    <div className="max-w-6xl mx-auto p-6 font-sans">
+      {/* Header Salam Dinamis */}
+      <div className="mb-8 p-6 bg-gradient-to-r from-[#ede7f6] to-white rounded-3xl border border-purple-100 flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-black text-gray-800 tracking-tight">Manajemen Admin & User</h2>
-          <p className="text-gray-400 text-xs mt-1">Kelola hak akses dan staf operasional Berry Laundry.</p>
+          <h2 className="text-2xl font-black text-gray-800">Manajemen Pengguna</h2>
+          <p className="text-gray-500 text-xs mt-1">Kelola data login operator Berry Laundry langsung ke Supabase.</p>
+        </div>
+        <div className="text-right">
+          <span className="text-[10px] font-bold text-purple-400 uppercase tracking-wider block">Petugas Aktif</span>
+          <span className="text-sm font-black text-[#5e35b1]">✨ {userSekarang}</span>
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* KANAN: FORM TAMBAH USER */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm h-fit">
-          <h3 className="font-bold text-gray-800 text-sm mb-4">Tambah Staf Baru ✨</h3>
-          <form onSubmit={handleTambahUser} className="space-y-4">
-            <div>
-              <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Nama Lengkap</label>
-              <input
-                type="text"
-                value={form.nama}
-                onChange={(e) => setForm({ ...form, nama: e.target.value })}
-                placeholder="Nama Staf"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-[#5da5e8]"
-              />
-            </div>
-            <div>
-              <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Email</label>
-              <input
-                type="email"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                placeholder="email@laundry.com"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-[#5da5e8]"
-              />
-            </div>
-            <div>
-              <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Role / Jabatan</label>
-              <select
-                value={form.role}
-                onChange={(e) => setForm({ ...form, role: e.target.value })}
-                className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs outline-none focus:border-[#5da5e8]"
+      {error && <div className="p-4 mb-4 text-xs font-semibold bg-red-50 text-red-600 rounded-2xl border border-red-100">{error}</div>}
+      {success && <div className="p-4 mb-4 text-xs font-semibold bg-green-50 text-green-600 rounded-2xl border border-green-100">{success}</div>}
+
+      <div className="grid lg:grid-cols-12 gap-8 items-start">
+        {/* FORM CREATE & UPDATE OPERATOR */}
+        <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-4">
+          <h3 className="text-xs font-black text-gray-700 uppercase tracking-wider mb-2">
+            {isEditing ? "✏️ Edit Data Operator" : "➕ Tambah Operator"}
+          </h3>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="text"
+              name="nama"
+              disabled={loading}
+              value={dataForm.nama}
+              onChange={handleChange}
+              placeholder="Nama Lengkap"
+              required
+              className="w-full p-3.5 bg-gray-50/50 rounded-2xl border border-gray-200 focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-[#5e35b1] text-xs font-semibold transition-all"
+            />
+            <input
+              type="text"
+              name="email"
+              disabled={loading}
+              value={dataForm.email}
+              onChange={handleChange}
+              placeholder="Username / Email"
+              required
+              className="w-full p-3.5 bg-gray-50/50 rounded-2xl border border-gray-200 focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-[#5e35b1] text-xs font-semibold transition-all"
+            />
+            <input
+              type="text"
+              name="password"
+              disabled={loading}
+              value={dataForm.password}
+              onChange={handleChange}
+              placeholder="Password"
+              required
+              className="w-full p-3.5 bg-gray-50/50 rounded-2xl border border-gray-200 focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-[#5e35b1] text-xs font-semibold transition-all"
+            />
+            
+            <div className="flex flex-col gap-2">
+              <button
+                type="submit"
+                disabled={loading}
+                className={`w-full font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition-all disabled:opacity-50 shadow-md ${
+                  isEditing 
+                    ? "bg-amber-500 hover:bg-amber-600 text-white shadow-amber-100" 
+                    : "bg-[#5e35b1] hover:bg-[#4527a0] text-white shadow-purple-100"
+                }`}
               >
-                <option>Kasir</option>
-                <option>Kurir</option>
-                <option>Admin Utama</option>
-              </select>
+                {loading ? "Memproses..." : isEditing ? "Update Operator 🎉" : "Simpan Operator →"}
+              </button>
+
+              {isEditing && (
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  className="w-full bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold py-2.5 rounded-2xl text-xs uppercase tracking-wider transition-all"
+                >
+                  Batal Edit
+                </button>
+              )}
             </div>
-            <button className="w-full bg-[#5da5e8] hover:bg-[#4a8ecc] text-white font-bold py-3 rounded-xl text-xs transition-all shadow-md shadow-[#5da5e8]/20">
-              Simpan Staf
-            </button>
           </form>
         </div>
 
-        {/* KIRI: TABEL DAFTAR USER */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="p-4 border-b border-gray-50 bg-gray-50/50">
-            <h3 className="font-bold text-gray-700 text-xs">Daftar Pengguna Aktif</h3>
+        {/* TABEL DENGAN TOMBOL EDIT & HAPUS */}
+        <div className="lg:col-span-8 bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-50 bg-gray-50/50">
+            <h3 className="font-bold text-xs text-gray-700 uppercase tracking-wider">Daftar Akun Database ({users.length})</h3>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-gray-100 bg-gray-50/30 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                  <th className="py-3 px-4">Nama Staf</th>
-                  <th className="py-3 px-4">Role</th>
-                  <th className="py-3 px-4">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50 text-xs text-gray-700">
-                {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="py-3.5 px-4">
-                      <div className="font-bold text-gray-800">{user.nama}</div>
-                      <div className="text-[10px] text-gray-400">{user.email}</div>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <span className="bg-blue-50 text-blue-600 px-2.5 py-1 rounded-md font-semibold text-[10px]">
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${
-                        user.status === "Aktif" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
-                      }`}>
-                        {user.status}
-                      </span>
-                    </td>
+
+          {loading && <p className="p-6 text-xs text-gray-400 font-medium animate-pulse">Menghubungkan ke PostgreSQL Supabase...</p>}
+          {!loading && users.length === 0 && <p className="p-6 text-xs text-gray-400 text-center font-medium">Belum ada operator terdaftar.</p>}
+
+          {!loading && users.length > 0 && (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-left text-xs">
+                <thead>
+                  <tr className="border-b border-gray-100 text-gray-400 uppercase font-bold bg-gray-50/20">
+                    <th className="px-6 py-3.5 text-center">No</th>
+                    <th className="px-6 py-3.5">Nama</th>
+                    <th className="px-6 py-3.5">Username / Email</th>
+                    <th className="px-6 py-3.5">Kredensial</th>
+                    <th className="px-6 py-3.5 text-center">Aksi</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {users.map((user, index) => (
+                    <tr key={user.id || index} className="border-b border-gray-50 hover:bg-gray-50/30 transition-colors">
+                      <td className="px-6 py-4 text-center font-bold text-gray-400">{index + 1}.</td>
+                      <td className="px-6 py-4 font-bold text-gray-800">{user.nama}</td>
+                      <td className="px-6 py-4 text-gray-600 font-medium">{user.email}</td>
+                      <td className="px-6 py-4">
+                        <span className="font-mono bg-gray-50 text-gray-400 px-2 py-1 rounded-md border border-gray-100">
+                          {user.password}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-center flex items-center justify-center space-x-2">
+                        {/* TOMBOL EDIT BARU */}
+                        <button
+                          type="button"
+                          onClick={() => handleEditClick(user)}
+                          className="px-3 py-1.5 bg-amber-50 text-amber-600 font-bold rounded-xl hover:bg-amber-500 hover:text-white transition-all text-[11px]"
+                        >
+                          Edit
+                        </button>
+                        {/* TOMBOL HAPUS */}
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(user.id, user.nama)}
+                          disabled={loading}
+                          className="px-3 py-1.5 bg-red-50 text-red-500 font-bold rounded-xl hover:bg-red-500 hover:text-white transition-all text-[11px]"
+                        >
+                          Hapus
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </div>

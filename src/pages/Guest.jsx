@@ -5,23 +5,19 @@ export default function Guest() {
   const navigate = useNavigate();
   const [resi, setResi] = useState("");
   const [statusCucian, setStatusCucian] = useState(null);
-  const [kontakForm, setKontakForm] = useState({ nama: "", pesan: "" });
+  const [kontakForm, setKontakForm] = useState({ nama: "", email: "", pesan: "" });
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState("");
   const [chatHistory, setChatHistory] = useState([
     { sender: "bot", text: "Halo! Selamat datang di Berry Laundry. Ada yang bisa kami bantu hari ini? 💙" }
   ]);
   
-  // State pengontrol input email berlangganan
   const [subscriberContact, setSubscriberContact] = useState("");
-
-  // Animasi scroll reveal
   const [revealedSections, setRevealedSections] = useState({});
   const [currentSlide, setCurrentSlide] = useState(0);
   const [activeSection, setActiveSection] = useState("beranda");
   const [scrollY, setScrollY] = useState(0);
   
-  // Refs untuk setiap section
   const sectionRefs = {
     beranda: useRef(null),
     keunggulan: useRef(null),
@@ -76,6 +72,10 @@ export default function Guest() {
     e.preventDefault();
     scrollToSection(sectionId);
     setActiveSection(sectionId);
+  };
+
+  const handlePesanSekarang = () => {
+    navigate("/login-member");
   };
 
   useEffect(() => {
@@ -150,11 +150,14 @@ export default function Guest() {
 
   const handleKirimKontak = (e) => {
     e.preventDefault();
-    alert(`Terima kasih ${kontakForm.nama}, pesan Anda berhasil dikirim ke Berry Laundry!`);
-    setKontakForm({ nama: "", pesan: "" });
+    if (!kontakForm.email) {
+      alert("Harap masukkan email Anda!");
+      return;
+    }
+    alert(`Terima kasih ${kontakForm.nama}, pesan Anda berhasil dikirim ke Berry Laundry!\n\nKami akan membalas ke email: ${kontakForm.email}`);
+    setKontakForm({ nama: "", email: "", pesan: "" });
   };
 
-  // Fungsi submisi pendaftaran email promo
   const handleSubscribePromo = (e) => {
     e.preventDefault();
     alert(`Terima kasih! Email Anda (${subscriberContact}) telah berhasil terdaftar. Silakan cek kotak masuk email Anda untuk mengklaim semua kode voucher promo Berry Laundry! 🎁💙`);
@@ -210,7 +213,6 @@ export default function Guest() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 text-gray-800 font-sans relative overflow-x-hidden">
       <ParticleBackground />
       
-      {/* Floating background elements with parallax */}
       <div className="fixed top-20 left-10 w-32 h-32 bg-blue-200 rounded-full blur-3xl opacity-30 pointer-events-none" style={getParallaxStyle(0.03, -1)} />
       <div className="fixed bottom-20 right-10 w-40 h-40 bg-purple-200 rounded-full blur-3xl opacity-30 pointer-events-none" style={getParallaxStyle(0.05, 1)} />
       <div className="fixed top-1/3 right-20 w-24 h-24 bg-pink-200 rounded-full blur-3xl opacity-20 pointer-events-none" style={getParallaxStyle(0.04, -1)} />
@@ -236,7 +238,7 @@ export default function Guest() {
               </span> 
               <br />
               <span className="text-blue-600 inline-block hover:scale-105 transition-transform duration-300" style={{animation: 'slideInLeft 0.6s ease-out 0.2s both'}}>
-                Laundry Della🧺
+                Laundry 🧺
               </span>
             </h1>
           </div>
@@ -245,10 +247,10 @@ export default function Guest() {
           </p>
           <div className="flex gap-3" style={{animation: 'slideInRight 0.6s ease-out 0.4s both'}}>
             <button 
-              onClick={() => navigate("/pesan")} 
+              onClick={handlePesanSekarang}
               className="bg-gradient-to-r from-[#5da5e8] to-[#4a8ecc] hover:from-[#4a8ecc] hover:to-[#3d7ab3] text-white px-6 py-3 rounded-full font-bold text-sm shadow-lg shadow-blue-200 transform hover:-translate-y-2 hover:scale-105 active:translate-y-0 transition-all duration-300 group"
             >
-              <span className="inline-block group-hover:rotate-12 transition-transform">✨</span> Mulai Sekarang
+              <span className="inline-block group-hover:rotate-12 transition-transform">✨</span> Pesan Sekarang
             </button>
             <button 
               onClick={(e) => handleNavClick(e, "layanan")}
@@ -303,7 +305,7 @@ export default function Guest() {
               className="group bg-white p-6 rounded-3xl border border-blue-100 shadow-sm text-center transform hover:scale-110 hover:shadow-xl transition-all duration-300 cursor-pointer"
               style={{animation: `zoomIn 0.5s ease-out ${stat.delay}s both`}}
             >
-              <div className="text-3xl mb-2 group-hover:scale-12 class transition-transform duration-300">{stat.icon}</div>
+              <div className="text-3xl mb-2 group-hover:scale-125 transition-transform duration-300">{stat.icon}</div>
               <h3 className="text-2xl font-black text-[#5da5e8] group-hover:animate-pulse">{stat.number}</h3>
               <p className="text-xs text-gray-400 font-medium mt-1 group-hover:text-gray-600 transition-colors">{stat.label}</p>
             </div>
@@ -311,18 +313,16 @@ export default function Guest() {
         </div>
       </section>
 
-      {/* ==================== FIX: SECTION LANGGANAN PROMO NEWSLETTER TERPADU ==================== */}
+      {/* ==================== PROMO NEWSLETTER ==================== */}
       <section 
         id="promo" 
         ref={sectionRefs.promo}
         className={`max-w-7xl mx-auto px-6 py-16 transition-all duration-700 transform ${revealedSections.promo ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}
       >
         <div className="bg-gradient-to-br from-blue-600 via-blue-500 to-sky-500 rounded-3xl p-8 md:p-12 text-white shadow-xl relative overflow-hidden grid md:grid-cols-12 gap-8 items-center">
-          
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none translate-x-20 -translate-y-20"></div>
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-300/20 rounded-full blur-2xl pointer-events-none -translate-x-10 translate-y-10"></div>
 
-          {/* SISI KIRI: Formulir Input Email Langganan */}
           <div className="md:col-span-6 space-y-6 relative z-10">
             <div>
               <span className="bg-white/20 text-white text-[11px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
@@ -349,7 +349,7 @@ export default function Guest() {
                 type="submit" 
                 className="bg-white text-blue-600 font-bold px-6 py-3 rounded-xl text-xs hover:bg-blue-50 active:scale-95 transition-all shadow-md transform hover:scale-105 whitespace-nowrap"
               >
-                Langganan &amp; Ambil Promo
+                Langganan & Ambil Promo
               </button>
             </form>
 
@@ -358,7 +358,6 @@ export default function Guest() {
             </p>
           </div>
 
-          {/* SISI KANAN: Visual Kumpulan Benefit Voucher Eksklusif */}
           <div className="md:col-span-6 grid gap-4 relative z-10">
             <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/15 p-4 rounded-2xl transform hover:translate-x-2 transition-transform duration-300">
               <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-xl shadow-inner">🎉</div>
@@ -367,7 +366,6 @@ export default function Guest() {
                 <p className="text-xs text-blue-100 mt-0.5">Potongan langsung kuota kiloan pertama yang otomatis dikirim ke email.</p>
               </div>
             </div>
-
             <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/15 p-4 rounded-2xl transform hover:translate-x-2 transition-transform duration-300">
               <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-xl shadow-inner">🛏️</div>
               <div>
@@ -375,7 +373,6 @@ export default function Guest() {
                 <p className="text-xs text-blue-100 mt-0.5">Penawaran khusus kupon cuci 2 bedcover besar gratis cuci lipat harian.</p>
               </div>
             </div>
-
             <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/15 p-4 rounded-2xl transform hover:translate-x-2 transition-transform duration-300">
               <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-xl shadow-inner">🚀</div>
               <div>
@@ -384,7 +381,6 @@ export default function Guest() {
               </div>
             </div>
           </div>
-
         </div>
       </section>
 
@@ -436,7 +432,6 @@ export default function Guest() {
             <h2 className="text-3xl font-black text-gray-900">Ruang Edukasi & <span className="text-[#5da5e8] inline-block hover:scale-110 transition-transform">Inspirasi Mode</span></h2>
             <p className="text-gray-400 text-xs mt-2">Kumpulan rahasia dari para ahli laundry profesional untuk menjaga estetika busana Anda.</p>
           </div>
-
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               { 
@@ -457,7 +452,7 @@ export default function Guest() {
                 image: "https://info.populix.co/articles/wp-content/uploads/2022/03/usaha-laundry.jpg",
                 category: "Kesehatan Kulit",
                 title: "Detergen Higienis: Benteng Utama Anti-Alergi",
-                desc: "Pentingnya menggunakan sabun antiseptik untuk mencegah jamur...",
+                desc: "Pentingnya menggunakan sabun antiseptik untuk mencegah jamur dan iritasi kulit...",
                 delay: 0.2
               }
             ].map((article, idx) => (
@@ -529,46 +524,6 @@ export default function Guest() {
         </div>
       </section>
 
-      {/* ==================== KONTAK ==================== */}
-      <section 
-        id="kontak" 
-        ref={sectionRefs.kontak}
-        className={`py-16 px-6 bg-gray-50 border-b border-gray-100 transition-all duration-700 transform ${revealedSections.kontak ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}
-      >
-        <div className="max-w-xl mx-auto text-center">
-          <h2 className="text-3xl font-black mb-2 text-gray-900">Saluran <span className="text-[#5da5e8] inline-block hover:scale-110 transition-transform">Komunikasi</span></h2>
-          <p className="text-gray-400 text-xs mb-8">Kritik, saran, masukan khusus, atau kemitraan b2b? Kami siap mendengar tanggapan Anda.</p>
-          
-          <form onSubmit={handleKirimKontak} className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm text-left space-y-4 transform hover:shadow-xl transition-all duration-300">
-            <div className="group">
-              <label className="block text-xs font-bold text-gray-500 uppercase mb-1 group-focus-within:text-[#5da5e8] group-hover:text-[#5da5e8] transition-colors">Nama Lengkap</label>
-              <input 
-                type="text" 
-                required
-                value={kontakForm.nama}
-                onChange={(e) => setKontakForm({ ...kontakForm, nama: e.target.value })}
-                placeholder="Masukkan nama Anda" 
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs focus:border-[#5da5e8] focus:shadow-md focus:scale-105 transition-all duration-300"
-              />
-            </div>
-            <div className="group">
-              <label className="block text-xs font-bold text-gray-500 uppercase mb-1 group-focus-within:text-[#5da5e8] group-hover:text-[#5da5e8] transition-colors">Detail Pesan / Masukan</label>
-              <textarea 
-                rows="3"
-                required
-                value={kontakForm.pesan}
-                onChange={(e) => setKontakForm({ ...kontakForm, pesan: e.target.value })}
-                placeholder="Tulis pesan Anda di sini..." 
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl outline-none text-xs focus:border-[#5da5e8] focus:shadow-md focus:scale-105 transition-all duration-300 resize-none"
-              ></textarea>
-            </div>
-            <button type="submit" className="w-full bg-gradient-to-r from-[#5da5e8] to-[#4a8ecc] hover:from-[#4a8ecc] hover:to-[#3d7ab3] text-white font-bold py-3 rounded-xl text-xs transform hover:scale-105 hover:-translate-y-0.5 active:scale-95 transition-all shadow-md shadow-blue-100">
-              Kirim Feedback Responsif →
-            </button>
-          </form>
-        </div>
-      </section>
-
       {/* ==================== CEK STATUS ==================== */}
       <section 
         id="cek-status" 
@@ -599,6 +554,176 @@ export default function Guest() {
         </div>
       </section>
 
+           {/* ==================== SALURAN KOMUNIKASI ==================== */}
+      <section 
+        id="kontak" 
+        ref={sectionRefs.kontak}
+        className={`py-16 px-6 bg-gray-50 transition-all duration-700 transform ${revealedSections.kontak ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}
+      >
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-black mb-2 text-gray-900">Saluran <span className="text-[#5da5e8] inline-block hover:scale-110 transition-transform">Komunikasi</span></h2>
+            <p className="text-gray-400 text-sm max-w-2xl mx-auto">
+              Kritik, saran, masukan khusus, atau kemitraan B2B? Kami siap mendengar tanggapan Anda.
+            </p>
+          </div>
+
+          {/* SECTION 1: FORM KIRIM PESAN */}
+          <div className="mb-12">
+            <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 max-w-3xl mx-auto">
+              <div className="bg-gradient-to-r from-[#5da5e8] to-[#4a8ecc] px-6 py-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                    <span className="text-white text-xl">✉️</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-white text-lg">Kirim Pesan Langsung</h3>
+                    <p className="text-white/70 text-xs">Kami akan membalas dalam 1x24 jam</p>
+                  </div>
+                </div>
+              </div>
+
+              <form onSubmit={handleKirimKontak} className="p-8 space-y-5">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 mb-2">
+                    Nama Lengkap <span className="text-red-500">*</span>
+                  </label>
+                  <input 
+                    type="text" 
+                    required
+                    value={kontakForm.nama}
+                    onChange={(e) => setKontakForm({ ...kontakForm, nama: e.target.value })}
+                    placeholder="Masukkan nama lengkap Anda" 
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm focus:border-[#5da5e8] focus:ring-2 focus:ring-blue-100 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 mb-2">
+                    Email <span className="text-red-500">*</span>
+                  </label>
+                  <input 
+                    type="email" 
+                    required
+                    value={kontakForm.email}
+                    onChange={(e) => setKontakForm({ ...kontakForm, email: e.target.value })}
+                    placeholder="email@example.com" 
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm focus:border-[#5da5e8] focus:ring-2 focus:ring-blue-100 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 mb-2">
+                    Pesan / Masukan <span className="text-red-500">*</span>
+                  </label>
+                  <textarea 
+                    rows="5"
+                    required
+                    value={kontakForm.pesan}
+                    onChange={(e) => setKontakForm({ ...kontakForm, pesan: e.target.value })}
+                    placeholder="Tulis pesan, kritik, saran, atau pertanyaan Anda di sini..." 
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-sm focus:border-[#5da5e8] focus:ring-2 focus:ring-blue-100 transition-all resize-none"
+                  />
+                </div>
+
+                <button 
+                  type="submit" 
+                  className="w-full bg-gradient-to-r from-[#5da5e8] to-[#4a8ecc] hover:from-[#4a8ecc] hover:to-[#3d7ab3] text-white font-bold py-3 rounded-xl text-sm transform hover:scale-105 transition-all shadow-md"
+                >
+                  Kirim Feedback →
+                </button>
+              </form>
+            </div>
+          </div>
+
+          {/* SECTION 2: HUBUNGI KAMI LANGSUNG */}
+          <div className="mb-12">
+            <div className="max-w-3xl mx-auto">
+              <div className="bg-white rounded-3xl shadow-lg p-8 hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                    <span className="text-green-600 text-2xl">📞</span>
+                  </div>
+                  <h3 className="font-bold text-gray-800 text-xl">Hubungi Kami Langsung</h3>
+                </div>
+                
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-colors">
+                    <span className="text-[#5da5e8] text-2xl">📱</span>
+                    <div>
+                      <p className="text-xs text-gray-400">Telepon / WhatsApp</p>
+                      <p className="font-bold text-gray-800">+62 812 6571 9003</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-colors">
+                    <span className="text-[#5da5e8] text-2xl">✉️</span>
+                    <div>
+                      <p className="text-xs text-gray-400">Email</p>
+                      <p className="font-bold text-gray-800">berry@laundry.com</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-colors">
+                    <span className="text-[#5da5e8] text-2xl">🕐</span>
+                    <div>
+                      <p className="text-xs text-gray-400">Jam Operasional</p>
+                      <p className="font-bold text-gray-800">07.00 - 21.00 WIB</p>
+                      <p className="text-xs text-gray-500">Senin - Minggu</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* SECTION 3: LOKASI KAMI & PETA */}
+          <div>
+            <div className="max-w-3xl mx-auto">
+              <div className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center gap-3 p-6 pb-0">
+                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                    <span className="text-red-600 text-2xl">📍</span>
+                  </div>
+                  <h3 className="font-bold text-gray-800 text-xl">Lokasi Kami</h3>
+                </div>
+                
+                <div className="p-6">
+                  <div className="mb-4 p-4 bg-gray-50 rounded-xl">
+                    <p className="text-sm text-gray-700 leading-relaxed">
+                      Jl. Umban Sari Atas, Kelurahan Umban Sari, <br />
+                      Kecamatan Rumbai, Kota Pekanbaru, Riau 28266
+                    </p>
+                  </div>
+                  
+                  <div className="rounded-xl overflow-hidden h-64 bg-gray-200">
+                    <iframe 
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.251167472023!2d101.445621!3d0.533333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5b8e3b2e5b8b3%3A0x8b2e5b8b3e2b5e8b!2sPekanbaru!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid" 
+                      width="100%" 
+                      height="100%" 
+                      style={{ border: 0 }}
+                      allowFullScreen=""
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title="Berry Laundry Location"
+                      className="rounded-xl"
+                    ></iframe>
+                  </div>
+                  
+                  <a 
+                    href="https://maps.google.com/?q=Jl.+Umban+Sari+Atas+Pekanbaru" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 mt-4 text-[#5da5e8] text-sm font-bold hover:underline"
+                  >
+                    📍 Buka di Google Maps →
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       {/* ==================== FOOTER ==================== */}
       <footer className="bg-white border-t border-gray-100 pt-16 pb-8 px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 text-sm text-gray-500">
@@ -624,7 +749,7 @@ export default function Guest() {
           <div className="space-y-3">
             <h4 className="font-bold text-gray-800 text-sm">Bantuan</h4>
             <ul className="space-y-2 text-xs">
-              <li><span className="hover:text-[#5da5e8] cursor-pointer transition-all hover:translate-x-2 inline-block">Syarat &amp; Ketentuan</span></li>
+              <li><span className="hover:text-[#5da5e8] cursor-pointer transition-all hover:translate-x-2 inline-block">Syarat & Ketentuan</span></li>
               <li><span className="hover:text-[#5da5e8] cursor-pointer transition-all hover:translate-x-2 inline-block">Kebijakan Privasi</span></li>
             </ul>
           </div>
@@ -749,10 +874,6 @@ export default function Guest() {
         .animate-bounce { animation: bounce 2s ease-in-out infinite; }
         .animate-spin { animation: spin 3s linear infinite; }
         .animate-pulse { animation: pulse 2s ease-in-out infinite; }
-        .delay-1000 { animation-delay: 1000ms; }
-        .hover\\:scale-105:hover { transform: scale(1.05); }
-        .hover\\:translate-x-2:hover { transform: translateX(8px); }
-        .hover\\:translate-y-2:hover { transform: translateY(8px); }
       `}</style>
     </div>
   );
