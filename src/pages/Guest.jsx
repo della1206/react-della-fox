@@ -636,46 +636,62 @@ export default function Guest() {
             </div>
           </div>
 
-          {/* SECTION 2: HUBUNGI KAMI LANGSUNG */}
-          <div className="mb-12">
-            <div className="max-w-3xl mx-auto">
-              <div className="bg-white rounded-3xl shadow-lg p-8 hover:shadow-xl transition-all duration-300">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                    <span className="text-green-600 text-2xl">📞</span>
-                  </div>
-                  <h3 className="font-bold text-gray-800 text-xl">Hubungi Kami Langsung</h3>
+                {/* SECTION 2: HUBUNGI KAMI LANGSUNG */}
+        <div className="mb-12">
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-white rounded-3xl shadow-lg p-8 hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <span className="text-green-600 text-2xl">📞</span>
                 </div>
+                <h3 className="font-bold text-gray-800 text-xl">Hubungi Kami Langsung</h3>
+              </div>
+              
+              <div className="grid md:grid-cols-3 gap-6">
+                {/* WhatsApp - TOMBOL LANGSUNG KE WA */}
+                <a 
+                  href="https://wa.me/6281265719003?text=Halo%20Berry%20Laundry%2C%20saya%20ingin%20bertanya%20tentang%20layanan%20laundry." 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-3 p-4 bg-green-50 rounded-xl hover:bg-green-100 transition-all duration-300 group cursor-pointer border-2 border-green-200 hover:border-green-400"
+                >
+                  <span className="text-[#25D366] text-2xl group-hover:scale-110 transition-transform">💬</span>
+                  <div>
+                    <p className="text-xs text-gray-400">Telepon / WhatsApp</p>
+                    <p className="text-[10px] text-green-600 font-semibold mt-1 group-hover:underline">
+                      Klik untuk chat →
+                    </p>
+                  </div>
+                </a>
                 
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-colors">
-                    <span className="text-[#5da5e8] text-2xl">📱</span>
-                    <div>
-                      <p className="text-xs text-gray-400">Telepon / WhatsApp</p>
-                      <p className="font-bold text-gray-800">+62 812 6571 9003</p>
-                    </div>
+                {/* Email */}
+                <a 
+                  href="mailto:berry@laundry.com" 
+                  className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-all duration-300 group cursor-pointer"
+                >
+                  <span className="text-[#5da5e8] text-2xl group-hover:scale-110 transition-transform">✉️</span>
+                  <div>
+                    <p className="text-xs text-gray-400">Email</p>
+                    <p className="font-bold text-gray-800 group-hover:text-blue-600 transition-colors">berry@laundry.com</p>
+                    <p className="text-[10px] text-blue-500 font-semibold mt-1 group-hover:underline">
+                      Kirim Email →
+                    </p>
                   </div>
-                  
-                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-colors">
-                    <span className="text-[#5da5e8] text-2xl">✉️</span>
-                    <div>
-                      <p className="text-xs text-gray-400">Email</p>
-                      <p className="font-bold text-gray-800">berry@laundry.com</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-colors">
-                    <span className="text-[#5da5e8] text-2xl">🕐</span>
-                    <div>
-                      <p className="text-xs text-gray-400">Jam Operasional</p>
-                      <p className="font-bold text-gray-800">07.00 - 21.00 WIB</p>
-                      <p className="text-xs text-gray-500">Senin - Minggu</p>
+                </a>
+                
+                      {/* Jam Operasional */}
+                      <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl hover:bg-purple-50 transition-all duration-300">
+                        <span className="text-[#5da5e8] text-2xl">🕐</span>
+                        <div>
+                          <p className="text-xs text-gray-400">Jam Operasional</p>
+                          <p className="font-bold text-gray-800">07.00 - 21.00 WIB</p>
+                          <p className="text-xs text-gray-500">Senin - Minggu</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
           {/* SECTION 3: LOKASI KAMI & PETA */}
           <div>

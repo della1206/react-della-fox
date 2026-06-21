@@ -22,6 +22,7 @@ const AdminUser = React.lazy(() => import("./pages/AdminUser"));
 const MemberPackage = React.lazy(() => import("./pages/MemberPackage"));
 const LoginMember = React.lazy(() => import("./pages/LoginMember"));
 const RegisterMember = React.lazy(() => import("./pages/RegisterMember"));
+const MemberConfirmation = React.lazy(() => import("./pages/MemberConfirmation"));
 
 export default function App() {
   const [role, setRole] = useState("Admin"); 
@@ -51,6 +52,7 @@ export default function App() {
         <Route path="/login-member" element={<LoginMember setIsLoggedIn={setIsMemberLoggedIn} />} />
         <Route path="/register-member" element={<RegisterMember />} />
         <Route path="/member-package" element={<MemberPackage />} />
+        <Route path="/member-confirmation" element={<MemberConfirmation />} />
 
         {/* ==================== HALAMAN ADMIN ==================== */}
         <Route element={<AuthLayout />}>
