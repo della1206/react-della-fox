@@ -25,6 +25,7 @@ export default function Guest() {
     layanan: useRef(null),
     artikel: useRef(null),
     testimonial: useRef(null),
+    tentang: useRef(null),
     kontak: useRef(null),
     "cek-status": useRef(null)
   };
@@ -51,6 +52,134 @@ export default function Guest() {
       description: "Parfum konsentrat premium yang segar dan tahan berminggu-minggu"
     }
   ];
+
+  // 📦 SIMULASI DATA PELACAKAN CUCIAN (Prototype CRM untuk Demo)
+  const resiDatabase = {
+    "RESI001": { 
+      status: "Selesai ✅", 
+      color: "text-green-600", 
+      bgColor: "bg-green-50",
+      detail: "Cucian Anda sudah siap diambil di outlet atau menunggu pengiriman antar jemput."
+    },
+    "RESI002": { 
+      status: "Sedang Diantar 🚗", 
+      color: "text-blue-600", 
+      bgColor: "bg-blue-50",
+      detail: "Kurir kami sedang dalam perjalanan untuk mengantar cucian ke rumah Anda."
+    },
+    "RESI003": { 
+      status: "Sedang Disetrika 🔥", 
+      color: "text-yellow-600", 
+      bgColor: "bg-yellow-50",
+      detail: "Pakaian Anda sedang dalam proses penyetrikaan dengan presisi tinggi."
+    },
+    "RESI004": { 
+      status: "Sedang Dicuci 🌊", 
+      color: "text-indigo-600", 
+      bgColor: "bg-indigo-50",
+      detail: "Cucian Anda sedang dalam mesin cuci dengan formula khusus ramah serat."
+    },
+    "RESI005": { 
+      status: "Menunggu Diproses ⏳", 
+      color: "text-orange-600", 
+      bgColor: "bg-orange-50",
+      detail: "Cucian Anda sudah terdaftar dan akan diproses dalam antrian."
+    },
+    "RESI006": { 
+      status: "Sedang Disetrika 🔥", 
+      color: "text-yellow-600", 
+      bgColor: "bg-yellow-50",
+      detail: "Pakaian Anda sedang disetrika dengan uap presisi."
+    }
+  };
+
+  // 📰 SIMULASI DATA ARTIKEL (Prototype Content Management)
+  const artikelDatabase = [
+    { 
+      id: 1,
+      image: "https://aquaelektronik.com/upload_files/17/686946360e-inilah-cara-mencuci-baju-agar-wangi-ala-laundry.jpg",
+      category: "Rahasia Perawatan",
+      title: "Trik Jitu Mengunci Kecerahan Warna Kaos Putih",
+      desc: "Ketahui cara memilah pigmen benang dan suhu air optimal agar pakaian putih Anda bebas kusam...",
+      content: `# Trik Jitu Mengunci Kecerahan Warna Kaos Putih
+
+Pakaian putih adalah investasi yang memerlukan perawatan khusus. Berikut adalah rahasia Berry Laundry untuk menjaga kecerahan warna kaos putih Anda:
+
+## 1. Pemilahan Warna yang Tepat
+Pisahkan pakaian putih dari warna lain untuk menghindari noda dan penyerapan warna. Kami menggunakan sistem 1 MESIN 1 PELANGGAN untuk memastikan tidak ada transferan warna.
+
+## 2. Suhu Air Optimal
+Gunakan air hangat (30-40°C) bukan air panas. Air terlalu panas dapat membuat serat kain rapuh dan warna lebih mudah pudar.
+
+## 3. Formula Detergent Khusus
+Gunakan detergent yang mengandung brightener untuk menjaga putih cemerlang. Kami menggunakan detergen premium yang aman untuk serat kain sensitif.
+
+## 4. Teknik Pencucian Modern
+Gunakan mesin cuci dengan teknologi modern yang dapat mengatur tekanan air dan durasi pencucian secara optimal.
+
+## 5. Pengeringan Alami
+Keringkan di tempat yang teduh untuk menghindari panas matahari langsung yang dapat menyebabkan kusam.
+
+Dengan tips-tips ini, pakaian putih Anda akan tetap cemerlang dan tahan lama!`
+    },
+    { 
+      id: 2,
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9m246aHaqEVRpyvWjDZvT17Ts-ARF11IcBg&s",
+      category: "Inovasi Alat",
+      title: "Alasan Mengapa Setrika Uap Jauh Lebih Aman",
+      desc: "Bongkar teknologi kelembapan uap air yang mampu merenggangkan benang kusut tanpa risiko terbakar...",
+      content: `# Alasan Mengapa Setrika Uap Jauh Lebih Aman
+
+Teknologi setrika uap telah merevolusi cara kami merawat pakaian. Berikut mengapa kami menggunakan setrika uap di Berry Laundry:
+
+## 1. Tidak Ada Kontak Langsung Panas
+Uap air yang panas merenggangkan serat kain tanpa kontak langsung dengan logam panas. Ini mengurangi risiko gosong hingga 95%.
+
+## 2. Lebih Lembut untuk Serat Kain
+Uap membantu serat kain kembali ke posisi alami tanpa tekanan berat. Cocok untuk kain sensitif seperti sutra dan wol.
+
+## 3. Membunuh Bakteri dan Jamur
+Uap panas pada suhu 100°C mampu membunuh hingga 99.9% bakteri dan alergen tanpa menggunakan bahan kimia berbahaya.
+
+## 4. Hemat Energi
+Setrika uap menggunakan energi lebih efisien dibanding setrika tradisional karena proses lebih cepat.
+
+## 5. Hasil Lebih Rapi dan Tahan Lama
+Hasil setrika uap lebih halus dan tahan lebih lama karena serat kain tidak rusak.
+
+Investasi pada teknologi setrika uap adalah investasi untuk kualitas perawatan pakaian yang superior!`
+    },
+    { 
+      id: 3,
+      image: "https://info.populix.co/articles/wp-content/uploads/2022/03/usaha-laundry.jpg",
+      category: "Kesehatan Kulit",
+      title: "Detergen Higienis: Benteng Utama Anti-Alergi",
+      desc: "Pentingnya menggunakan sabun antiseptik untuk mencegah jamur dan iritasi kulit...",
+      content: `# Detergen Higienis: Benteng Utama Anti-Alergi
+
+Pemilihan detergen yang tepat sangat penting untuk kesehatan kulit Anda. Berry Laundry menggunakan determinan khusus yang hypoallergenic:
+
+## 1. Formula Ramah Lingkungan
+Detergen kami tidak mengandung phosphate dan bahan kimia berbahaya yang dapat merusak lingkungan.
+
+## 2. Anti-Alergi dan Teruji Dermatologi
+Telah diuji oleh dermatologist untuk memastikan aman untuk kulit sensitif, terutama untuk bayi dan anak-anak.
+
+## 3. Memiliki Sifat Antiseptik
+Mampu membunuh bakteri penyebab keputihan, jamur, dan aroma tidak sedap.
+
+## 4. Tidak Meninggalkan Residu
+Detergen kami tidak meninggalkan residu di serat kain yang dapat menyebabkan iritasi.
+
+## 5. Harum Alami dan Tahan Lama
+Menggunakan parfum konsentrat premium yang tahan lama namun tidak berlebihan.
+
+Kesehatan kulit keluarga Anda adalah prioritas utama kami di Berry Laundry!`
+    }
+  ];
+
+  // 📝 STATE untuk Modal Artikel
+  const [selectedArticle, setSelectedArticle] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => { setScrollY(window.scrollY); };
@@ -142,10 +271,31 @@ export default function Guest() {
   const handleLacak = (e) => {
     e.preventDefault();
     if (!resi) return alert("Masukkan nomor resi terlebih dahulu!");
-    setStatusCucian({
-      id: resi.toUpperCase(),
-      status: "Sedang Diproses (Cuci-Setrika)",
-    });
+    
+    // 🔍 LOOKUP dari simulasi data CRM
+    const resiUpper = resi.toUpperCase();
+    const trackedData = resiDatabase[resiUpper];
+    
+    if (trackedData) {
+      setStatusCucian({
+        id: resiUpper,
+        status: trackedData.status,
+        color: trackedData.color,
+        bgColor: trackedData.bgColor,
+        detail: trackedData.detail,
+        found: true
+      });
+    } else {
+      // Fallback jika resi tidak ditemukan
+      setStatusCucian({
+        id: resiUpper,
+        status: "Resi tidak ditemukan ❌",
+        color: "text-red-600",
+        bgColor: "bg-red-50",
+        detail: "Silakan cek kembali nomor resi Anda atau hubungi CS kami di WhatsApp.",
+        found: false
+      });
+    }
   };
 
   const handleKirimKontak = (e) => {
@@ -433,33 +583,11 @@ export default function Guest() {
             <p className="text-gray-400 text-xs mt-2">Kumpulan rahasia dari para ahli laundry profesional untuk menjaga estetika busana Anda.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              { 
-                image: "https://aquaelektronik.com/upload_files/17/686946360e-inilah-cara-mencuci-baju-agar-wangi-ala-laundry.jpg",
-                category: "Rahasia Perawatan",
-                title: "Trik Jitu Mengunci Kecerahan Warna Kaos Putih",
-                desc: "Ketahui cara memilah pigmen benang dan suhu air optimal agar pakaian putih Anda bebas kusam...",
-                delay: 0
-              },
-              {
-                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9m246aHaqEVRpyvWjDZvT17Ts-ARF11IcBg&s",
-                category: "Inovasi Alat",
-                title: "Alasan Mengapa Setrika Uap Jauh Lebih Aman",
-                desc: "Bongkar teknologi kelembapan uap air yang mampu merenggangkan benang kusut tanpa risiko terbakar...",
-                delay: 0.1
-              },
-              {
-                image: "https://info.populix.co/articles/wp-content/uploads/2022/03/usaha-laundry.jpg",
-                category: "Kesehatan Kulit",
-                title: "Detergen Higienis: Benteng Utama Anti-Alergi",
-                desc: "Pentingnya menggunakan sabun antiseptik untuk mencegah jamur dan iritasi kulit...",
-                delay: 0.2
-              }
-            ].map((article, idx) => (
+            {artikelDatabase.map((article, idx) => (
               <div 
                 key={idx} 
                 className="group bg-blue-50/20 border border-blue-100 rounded-3xl overflow-hidden shadow-sm transform hover:-translate-y-3 hover:shadow-xl transition-all duration-300 flex flex-col bg-white cursor-pointer"
-                style={{animation: `fadeIn 0.6s ease-out ${article.delay}s both`}}
+                style={{animation: `fadeIn 0.6s ease-out ${article.id * 0.1}s both`}}
               >
                 <div className="h-48 overflow-hidden relative bg-gray-100">
                   <img 
@@ -476,7 +604,10 @@ export default function Guest() {
                     <h3 className="font-bold text-base text-gray-800 mt-1 mb-2 group-hover:text-[#5da5e8] transition-colors">{article.title}</h3>
                     <p className="text-gray-400 text-xs leading-relaxed group-hover:text-gray-500 transition-colors">{article.desc}</p>
                   </div>
-                  <button className="text-[#5da5e8] text-xs font-bold mt-4 text-left hover:underline inline-flex items-center gap-1 group-hover:gap-2 transition-all">
+                  <button 
+                    onClick={() => setSelectedArticle(article)}
+                    className="text-[#5da5e8] text-xs font-bold mt-4 text-left hover:underline inline-flex items-center gap-1 group-hover:gap-2 transition-all"
+                  >
                     Pelajari Selengkapnya <span className="group-hover:translate-x-1 transition-transform">→</span>
                   </button>
                 </div>
@@ -524,6 +655,128 @@ export default function Guest() {
         </div>
       </section>
 
+      {/* ==================== TENTANG KAMI ==================== */}
+      <section 
+        id="tentang" 
+        ref={sectionRefs.tentang}
+        className={`py-16 px-6 bg-gradient-to-br from-white via-blue-50 to-white transition-all duration-700 transform ${revealedSections.tentang ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Kolom Kiri: Konten Tentang */}
+            <div className="space-y-6 relative z-10" style={{animation: 'slideInLeft 0.7s ease-out'}}>
+              <div>
+                <span className="bg-blue-100 text-[#5da5e8] text-[11px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider inline-block">
+                  Tentang Kami
+                </span>
+                <h2 className="text-4xl font-black text-gray-900 mt-4 mb-3 leading-tight">
+                  Cerita Di Balik <span className="text-[#5da5e8] relative group inline-block hover:scale-105 transition-transform">
+                    Berry Laundry
+                    <span className="absolute -bottom-1 left-0 w-0 h-1 bg-[#5da5e8] group-hover:w-full transition-all duration-300"></span>
+                  </span>
+                </h2>
+              </div>
+
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Berry Laundry lahir dari sebuah misi sederhana: <span className="font-bold">mengubah pengalaman mencuci pakaian dari beban menjadi kesenangan</span>. Kami memahami bahwa pakaian Anda bukan sekadar kain, tetapi investasi berharga yang perlu perawatan istimewa.
+              </p>
+
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Dengan lebih dari <span className="font-bold text-[#5da5e8]">5+ tahun pengalaman</span> di industri laundry profesional, kami telah melayani lebih dari <span className="font-bold text-[#5da5e8]">15.000+ pelanggan setia</span> dengan standar kualitas internasional dan dedikasi penuh.
+              </p>
+
+              <div className="space-y-4 pt-2">
+                <div className="flex items-start gap-3 p-4 bg-white border border-blue-100 rounded-xl hover:shadow-md hover:border-blue-200 transition-all duration-300 transform hover:-translate-y-1">
+                  <span className="text-2xl flex-shrink-0">🎯</span>
+                  <div>
+                    <h4 className="font-bold text-gray-800 text-sm">Misi Kami</h4>
+                    <p className="text-xs text-gray-500 mt-1">Memberikan solusi laundry profesional yang terpercaya, berkualitas, dan terjangkau untuk membebaskan waktu dan pikiran Anda.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 p-4 bg-white border border-blue-100 rounded-xl hover:shadow-md hover:border-blue-200 transition-all duration-300 transform hover:-translate-y-1">
+                  <span className="text-2xl flex-shrink-0">✨</span>
+                  <div>
+                    <h4 className="font-bold text-gray-800 text-sm">Visi Kami</h4>
+                    <p className="text-xs text-gray-500 mt-1">Menjadi brand laundry pilihan utama di Pekanbaru dengan teknologi, kualitas, dan layanan pelanggan yang luar biasa.</p>
+                  </div>
+                </div>
+              </div>
+
+              <button 
+                onClick={handlePesanSekarang}
+                className="bg-gradient-to-r from-[#5da5e8] to-[#4a8ecc] hover:from-[#4a8ecc] hover:to-[#3d7ab3] text-white px-6 py-3 rounded-full font-bold text-sm shadow-lg shadow-blue-200 transform hover:-translate-y-2 hover:scale-105 active:translate-y-0 transition-all duration-300 group inline-flex items-center gap-2"
+              >
+                <span className="group-hover:rotate-12 transition-transform inline-block">🚀</span> Mulai Perjalanan Bersama
+              </button>
+            </div>
+
+            {/* Kolom Kanan: Visual Elements */}
+            <div className="relative flex justify-center" style={{animation: 'slideInRight 0.7s ease-out'}}>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 rounded-3xl blur-2xl opacity-30 animate-pulse"></div>
+              
+              <div className="relative w-full max-w-sm grid grid-cols-2 gap-4">
+                {/* Card 1 */}
+                <div className="bg-white p-6 rounded-2xl shadow-lg border border-blue-100 text-center transform hover:scale-105 hover:-translate-y-3 transition-all duration-300 cursor-pointer group h-48 flex flex-col items-center justify-center">
+                  <div className="text-5xl mb-2 group-hover:scale-125 transition-transform">👥</div>
+                  <h3 className="text-2xl font-black text-[#5da5e8] group-hover:animate-pulse">15K+</h3>
+                  <p className="text-xs text-gray-500 font-semibold mt-1 group-hover:text-gray-700 transition-colors">Pelanggan Puas</p>
+                </div>
+
+                {/* Card 2 */}
+                <div className="bg-white p-6 rounded-2xl shadow-lg border border-blue-100 text-center transform hover:scale-105 hover:-translate-y-3 transition-all duration-300 cursor-pointer group h-48 flex flex-col items-center justify-center">
+                  <div className="text-5xl mb-2 group-hover:scale-125 transition-transform">🏆</div>
+                  <h3 className="text-2xl font-black text-[#5da5e8] group-hover:animate-pulse">5+</h3>
+                  <p className="text-xs text-gray-500 font-semibold mt-1 group-hover:text-gray-700 transition-colors">Tahun Dedikasi</p>
+                </div>
+
+                {/* Card 3 */}
+                <div className="bg-white p-6 rounded-2xl shadow-lg border border-blue-100 text-center transform hover:scale-105 hover:-translate-y-3 transition-all duration-300 cursor-pointer group h-48 flex flex-col items-center justify-center">
+                  <div className="text-5xl mb-2 group-hover:scale-125 transition-transform">⭐</div>
+                  <h3 className="text-2xl font-black text-[#5da5e8] group-hover:animate-pulse">100%</h3>
+                  <p className="text-xs text-gray-500 font-semibold mt-1 group-hover:text-gray-700 transition-colors">Ramah Serat</p>
+                </div>
+
+                {/* Card 4 */}
+                <div className="bg-white p-6 rounded-2xl shadow-lg border border-blue-100 text-center transform hover:scale-105 hover:-translate-y-3 transition-all duration-300 cursor-pointer group h-48 flex flex-col items-center justify-center">
+                  <div className="text-5xl mb-2 group-hover:scale-125 transition-transform">💙</div>
+                  <h3 className="text-2xl font-black text-[#5da5e8] group-hover:animate-pulse">1 MESIN</h3>
+                  <p className="text-xs text-gray-500 font-semibold mt-1 group-hover:text-gray-700 transition-colors">1 Pelanggan</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bagian Nilai-Nilai Inti */}
+          <div className="mt-16 pt-12 border-t border-blue-100">
+            <div className="text-center mb-12">
+              <h3 className="text-2xl font-black text-gray-900 mb-2">
+                Nilai-Nilai Inti yang <span className="text-[#5da5e8]">Kami Pegang Teguh</span>
+              </h3>
+            </div>
+
+            <div className="grid md:grid-cols-4 gap-6">
+              {[
+                { icon: "💎", title: "Kualitas Premium", desc: "Setiap cucian diperlakukan dengan standar internasional dan detail maksimal." },
+                { icon: "🤝", title: "Kepercayaan Pelanggan", desc: "Transparansi penuh dan komunikasi terbuka dengan setiap pelanggan kami." },
+                { icon: "⚡", title: "Inovasi Teknologi", desc: "Menggunakan mesin modern dan formula terbaru untuk hasil terbaik." },
+                { icon: "🌱", title: "Ramah Lingkungan", desc: "Komitmen pada keberlanjutan dengan produk ramah lingkungan dan hemat air." }
+              ].map((value, idx) => (
+                <div 
+                  key={idx}
+                  className="group p-6 bg-white rounded-2xl border border-gray-100 text-center transform hover:-translate-y-3 hover:scale-105 hover:shadow-lg hover:border-blue-200 transition-all duration-300 cursor-pointer"
+                  style={{animation: `fadeIn 0.6s ease-out ${idx * 0.1}s both`}}
+                >
+                  <div className="text-4xl mb-3 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300">{value.icon}</div>
+                  <h4 className="font-bold text-gray-800 text-sm mb-2 group-hover:text-[#5da5e8] transition-colors">{value.title}</h4>
+                  <p className="text-xs text-gray-500 leading-relaxed group-hover:text-gray-600 transition-colors">{value.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ==================== CEK STATUS ==================== */}
       <section 
         id="cek-status" 
@@ -546,9 +799,15 @@ export default function Guest() {
           </form>
 
           {statusCucian && (
-            <div className="mt-5 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl max-w-lg mx-auto text-left text-xs animate-slideInDown">
-              <p className="text-gray-700">Identifikasi Nota: <span className="font-bold">{resi.toUpperCase()}</span></p>
-              <p className="text-gray-700 mt-1">Status: <span className="font-bold text-blue-600 animate-pulse">{statusCucian.status}</span></p>
+            <div className={`mt-5 p-6 border rounded-xl max-w-lg mx-auto text-left text-xs animate-slideInDown ${statusCucian.bgColor} ${statusCucian.found ? 'border-green-200' : 'border-red-200'}`}>
+              <p className="text-gray-700 font-bold mb-2">📦 Nomor Resi: <span className="text-blue-600">{statusCucian.id}</span></p>
+              <p className={`font-bold mb-3 text-sm ${statusCucian.color}`}>{statusCucian.status}</p>
+              <p className="text-gray-600 leading-relaxed">{statusCucian.detail}</p>
+              {statusCucian.found && (
+                <div className="mt-4 pt-4 border-t border-gray-300">
+                  <p className="text-xs text-gray-500">💡 Perlu bantuan? Hubungi CS kami di WhatsApp atau chat dengan Berry Bot berbasis aturan 🤖</p>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -756,7 +1015,7 @@ export default function Guest() {
           <div className="space-y-3">
             <h4 className="font-bold text-gray-800 text-sm">Perusahaan</h4>
             <ul className="space-y-2 text-xs">
-              <li><button onClick={(e) => handleNavClick(e, "beranda")} className="hover:text-[#5da5e8] transition-all hover:translate-x-2 inline-block">Tentang Kami</button></li>
+              <li><button onClick={(e) => handleNavClick(e, "tentang")} className="hover:text-[#5da5e8] transition-all hover:translate-x-2 inline-block">Tentang Kami</button></li>
               <li><button onClick={(e) => handleNavClick(e, "kontak")} className="hover:text-[#5da5e8] transition-all hover:translate-x-2 inline-block">Kontak</button></li>
               <li><button onClick={(e) => handleNavClick(e, "layanan")} className="hover:text-[#5da5e8] transition-all hover:translate-x-2 inline-block">Layanan</button></li>
             </ul>
@@ -785,7 +1044,77 @@ export default function Guest() {
         </div>
       </footer>
 
-      {/* ==================== CHATBOT ==================== */}
+      {/* ==================== MODAL ARTIKEL ==================== */}
+      {selectedArticle && (
+        <div className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl max-h-[90vh] overflow-y-auto animate-slideInUp">
+            {/* Header Modal */}
+            <div className="bg-gradient-to-r from-[#5da5e8] to-[#4a8ecc] text-white p-6 flex items-center justify-between sticky top-0">
+              <div className="flex-1">
+                <span className="bg-white/20 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block">
+                  {selectedArticle.category}
+                </span>
+                <h2 className="text-2xl font-black mt-2">{selectedArticle.title}</h2>
+              </div>
+              <button
+                onClick={() => setSelectedArticle(null)}
+                className="text-white hover:scale-125 transition-transform text-2xl font-bold ml-4"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Body Modal */}
+            <div className="p-8 space-y-6">
+              <img 
+                src={selectedArticle.image}
+                alt={selectedArticle.title}
+                className="w-full h-80 object-cover rounded-2xl shadow-lg"
+              />
+
+              <div className="prose prose-sm max-w-none text-gray-700">
+                {selectedArticle.content.split('\n').map((line, idx) => {
+                  if (line.startsWith('#')) {
+                    if (line.startsWith('##')) {
+                      return <h3 key={idx} className="text-lg font-bold text-gray-900 mt-4 mb-2">{line.replace('##', '').trim()}</h3>;
+                    } else {
+                      return <h2 key={idx} className="text-2xl font-black text-gray-900 mt-6 mb-3">{line.replace('#', '').trim()}</h2>;
+                    }
+                  } else if (line.trim() === '') {
+                    return <div key={idx} className="h-2" />;
+                  } else {
+                    return <p key={idx} className="text-sm leading-relaxed text-gray-600">{line}</p>;
+                  }
+                })}
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mt-6">
+                <p className="text-xs text-gray-600">
+                  <span className="font-bold text-blue-600">💡 Tip Berry Laundry:</span> Untuk hasil maksimal, percayakan perawatan pakaian Anda kepada tim profesional kami. Hubungi kami di WhatsApp atau klik tombol di bawah!
+                </p>
+              </div>
+            </div>
+
+            {/* Footer Modal */}
+            <div className="bg-gray-50 px-8 py-4 flex gap-3 border-t sticky bottom-0">
+              <button
+                onClick={() => setSelectedArticle(null)}
+                className="flex-1 px-4 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-bold text-sm hover:bg-gray-100 transition-all"
+              >
+                Tutup
+              </button>
+              <a
+                href="https://wa.me/6281265719003?text=Halo%20Berry%20Laundry%2C%20saya%20tertarik%20dengan%20artikel%20ini."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#5da5e8] to-[#4a8ecc] text-white font-bold text-sm hover:from-[#4a8ecc] hover:to-[#3d7ab3] transition-all flex items-center justify-center gap-2"
+              >
+                💬 Chat dengan CS
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="fixed bottom-6 right-6 z-50">
         <button
           onClick={() => setIsChatOpen(!isChatOpen)}

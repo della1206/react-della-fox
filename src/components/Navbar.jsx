@@ -9,6 +9,7 @@ export default function Navbar({ activeSection, onNavClick }) {
     { name: "Beranda", id: "beranda" },
     { name: "Fitur", id: "keunggulan" },
     { name: "Layanan", id: "layanan" },
+    { name: "Tentang", id: "tentang" },
     { name: "Artikel", id: "artikel" },
     { name: "Testimonial", id: "testimonial" },
     { name: "Kontak", id: "kontak" },
