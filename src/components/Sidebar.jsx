@@ -9,7 +9,8 @@ import {
   BsLock, 
   BsSlashCircle, 
   BsPuzzle,
-  BsLightningCharge // Dipakai untuk ikon Kelola User
+  BsLightningCharge,
+  BsStar // Tambahkan icon untuk Ulasan
 } from "react-icons/bs";
 
 export default function Sidebar() {
@@ -23,7 +24,8 @@ export default function Sidebar() {
     { name: "Products", path: "/products", icon: <BsBoxSeam /> }, 
     { name: "Components", path: "/components", icon: <BsPuzzle /> }, 
     { name: "Pelanggan", path: "/Pelanggan", icon: <BsPeople /> },
-    { name: "Kelola User", path: "/admin-user", icon: <BsLightningCharge /> }, // <-- Tambahan Menu Baru
+    { name: "Ulasan", path: "/admin-review", icon: <BsStar /> }, // <-- Menu Ulasan
+    { name: "Kelola User", path: "/admin-user", icon: <BsLightningCharge /> },
   ];
 
   // Menu Error Pages untuk kebutuhan Praktikum

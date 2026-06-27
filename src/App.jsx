@@ -23,6 +23,8 @@ const MemberPackage = React.lazy(() => import("./pages/MemberPackage"));
 const LoginMember = React.lazy(() => import("./pages/LoginMember"));
 const RegisterMember = React.lazy(() => import("./pages/RegisterMember"));
 const MemberConfirmation = React.lazy(() => import("./pages/MemberConfirmation"));
+// Import AdminReview
+const AdminReview = React.lazy(() => import("./pages/AdminReview")); // Sesuaikan path dengan lokasi file Anda
 
 export default function App() {
   const [role, setRole] = useState("Admin"); 
@@ -69,7 +71,8 @@ export default function App() {
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/components" element={<Components />} />
           <Route path="/pelanggan" element={<FiturCrm />} />
-          <Route path="/admin-user" element={<AdminUser />} />  
+          <Route path="/admin-user" element={<AdminUser />} />
+          <Route path="/admin-review" element={<AdminReview />} /> {/* Route untuk AdminReview */}
 
           <Route path="/error-400" element={<ErrorPage errorCode="400" title="Bad Request" />} />
           <Route path="/error-401" element={<ErrorPage errorCode="401" title="Unauthorized" />} />
