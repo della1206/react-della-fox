@@ -40,6 +40,24 @@ export default function AdminReview() {
     }
   }
 
+  // FUNGSI BARU: Mengubah status tayang/sembunyi langsung dari kolom aksi
+  async function toggleShowHome(id, currentStatus) {
+    try {
+      const { error } = await supabase
+        .from("reviews")
+        .update({ show_home: !currentStatus })
+        .eq("id", id);
+
+      if (error) throw error;
+      
+      // Update state lokal agar UI langsung berubah tanpa re-fetch penuh jika tidak ingin membebani network
+      setReviews(reviews.map(item => item.id === id ? { ...item, show_home: !currentStatus } : item));
+      setError(null);
+    } catch (err) {
+      setError(`Gagal mengubah status tampilan: ${err.message}`);
+    }
+  }
+
   async function addReview() {
     try {
       const reviewData = {
@@ -117,12 +135,9 @@ export default function AdminReview() {
     });
 
   return (
-    // Pembungkus Flexbox utama agar konten otomatis berjejer rapi di samping sidebar
-    <div className="flex min-h-screen bg-slate-50 w-full">
-      {/* Konten Halaman: flex-1 memastikan area ini mengambil seluruh sisa lebar layar */}
+    <div className="flex min-h-screen bg-slate-50 w-full text-left">
       <div className="flex-1 px-6 py-6 overflow-x-hidden">
         
-        {/* Dashboard Utama - Title */}
         <h1 className="text-3xl font-bold text-gray-800 mb-1">Ulasan Pelanggan</h1>
         <p className="text-gray-500 text-sm mb-6">Moderasi Ulasan & Feedback</p>
 
@@ -134,7 +149,7 @@ export default function AdminReview() {
 
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-blue-600 text-white px-5 py-2.5 rounded-lg mb-5 hover:bg-blue-700 transition-colors text-sm font-medium"
+          className="bg-blue-600 text-white px-5 py-2.5 rounded-lg mb-5 hover:bg-blue-700 transition-colors text-sm font-medium cursor-pointer"
         >
           + Tambah Review
         </button>
@@ -201,7 +216,7 @@ export default function AdminReview() {
             <div className="flex gap-2">
               <button
                 onClick={addReview}
-                className="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                className="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700 transition-colors cursor-pointer"
               >
                 Simpan Review
               </button>
@@ -216,7 +231,7 @@ export default function AdminReview() {
                     show_home: false,
                   });
                 }}
-                className="bg-gray-500 text-white px-5 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+                className="bg-gray-500 text-white px-5 py-2 rounded-lg hover:bg-gray-600 transition-colors cursor-pointer"
               >
                 Batal
               </button>
@@ -235,7 +250,7 @@ export default function AdminReview() {
 
           <button
             onClick={() => setFilter("all")}
-            className={`px-4 py-2 rounded-lg transition-colors text-sm ${
+            className={`px-4 py-2 rounded-lg transition-colors text-sm cursor-pointer ${
               filter === "all" 
                 ? "bg-blue-600 text-white" 
                 : "bg-white border text-gray-700 hover:bg-gray-50"
@@ -246,7 +261,7 @@ export default function AdminReview() {
 
           <button
             onClick={() => setFilter("shown")}
-            className={`px-4 py-2 rounded-lg transition-colors text-sm ${
+            className={`px-4 py-2 rounded-lg transition-colors text-sm cursor-pointer ${
               filter === "shown" 
                 ? "bg-blue-600 text-white" 
                 : "bg-white border text-gray-700 hover:bg-gray-50"
@@ -257,7 +272,7 @@ export default function AdminReview() {
 
           <button
             onClick={() => setFilter("hidden")}
-            className={`px-4 py-2 rounded-lg transition-colors text-sm ${
+            className={`px-4 py-2 rounded-lg transition-colors text-sm cursor-pointer ${
               filter === "hidden" 
                 ? "bg-blue-600 text-white" 
                 : "bg-white border text-gray-700 hover:bg-gray-50"
@@ -268,7 +283,7 @@ export default function AdminReview() {
 
           <button
             onClick={() => setFilter("5star")}
-            className={`px-4 py-2 rounded-lg transition-colors text-sm ${
+            className={`px-4 py-2 rounded-lg transition-colors text-sm cursor-pointer ${
               filter === "5star" 
                 ? "bg-blue-600 text-white" 
                 : "bg-white border text-gray-700 hover:bg-gray-50"
@@ -278,7 +293,7 @@ export default function AdminReview() {
           </button>
         </div>
 
-        {/* Table Section - Full Width No Space */}
+        {/* Table Section */}
         <div className="bg-white rounded-xl shadow overflow-hidden w-full">
           <div className="overflow-x-auto">
             <table className="w-full table-auto">
@@ -332,15 +347,27 @@ export default function AdminReview() {
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
                       <div className="flex gap-1.5">
+                        {/* TOMBOL MODERASI BARU: TAYANG / SEMBUNYIKAN ASINKRON */}
+                        <button
+                          onClick={() => toggleShowHome(item.id, item.show_home)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer text-white ${
+                            item.show_home 
+                              ? "bg-amber-500 hover:bg-amber-600" 
+                              : "bg-emerald-600 hover:bg-emerald-700"
+                          }`}
+                        >
+                          {item.show_home ? "Sembunyikan" : "Tayangkan"}
+                        </button>
+                        
                         <button
                           onClick={() => handleViewDetail(item)}
-                          className="bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 text-xs transition-colors"
+                          className="bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 text-xs transition-colors cursor-pointer"
                         >
                           Detail
                         </button>
                         <button
                           onClick={() => deleteReview(item.id)}
-                          className="bg-red-600 text-white px-3 py-1.5 rounded-lg hover:bg-red-700 text-xs transition-colors"
+                          className="bg-red-600 text-white px-3 py-1.5 rounded-lg hover:bg-red-700 text-xs transition-colors cursor-pointer"
                         >
                           Hapus
                         </button>
@@ -399,7 +426,7 @@ export default function AdminReview() {
                     setShowDetailModal(false);
                     setSelectedReview(null);
                   }}
-                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                  className="text-gray-400 hover:text-gray-600 text-2xl cursor-pointer"
                 >
                   ✕
                 </button>
@@ -478,7 +505,7 @@ export default function AdminReview() {
                   setShowDetailModal(false);
                   setSelectedReview(null);
                 }}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold cursor-pointer"
               >
                 Tutup
               </button>

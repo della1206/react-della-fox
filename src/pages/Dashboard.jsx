@@ -1,179 +1,518 @@
-import React from "react";
-import { 
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell 
-} from 'recharts';
-import { BsArrowUpRight, BsClockHistory, BsFillBoxSeamFill } from "react-icons/bs";
+import React, { useEffect, useState } from "react";
+import { supabase } from "../supabase/client";
 
-export default function Dashboard() {
-  // Data dummy tetap sama
-  const dataProduksi = [
-    { name: '2021', kilo: 120, satuan: 80 }, { name: '2022', kilo: 250, satuan: 150 },
-    { name: '2023', kilo: 210, satuan: 130 }, { name: '2024', kilo: 380, satuan: 210 },
-    { name: '2025', kilo: 330, satuan: 190 }, { name: '2026', kilo: 460, satuan: 280 },
-  ];
+export default function AdminReview() {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [error, setError] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [selectedReview, setSelectedReview] = useState(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
 
-  const stats = [
-    { label: "Total Pesanan", value: "1,240", icon: "🧺", trend: "+15%" },
-    { label: "Pendapatan (Jt)", value: "Rp 45.2", icon: "💰", trend: "+8%" },
-    { label: "Pelanggan Baru", value: "156", icon: "👤", trend: "+22%" },
-    { label: "Cucian Selesai", value: "982 kg", icon: "🧼", trend: "+10%" },
-  ];
+  const [form, setForm] = useState({
+    customer_name: "",
+    receipt_number: "",
+    rating: 5,
+    comment: "",
+    show_home: false,
+  });
+
+  useEffect(() => {
+    loadReview();
+  }, []);
+
+  async function loadReview() {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("reviews")
+        .select("*")
+        .order("id", { ascending: false });
+
+      if (error) throw error;
+      setReviews(data || []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // FUNGSI BARU: Mengubah status tayang/sembunyi langsung dari kolom aksi
+  async function toggleShowHome(id, currentStatus) {
+    try {
+      const { error } = await supabase
+        .from("reviews")
+        .update({ show_home: !currentStatus })
+        .eq("id", id);
+
+      if (error) throw error;
+      
+      // Update state lokal agar UI langsung berubah tanpa re-fetch penuh jika tidak ingin membebani network
+      setReviews(reviews.map(item => item.id === id ? { ...item, show_home: !currentStatus } : item));
+      setError(null);
+    } catch (err) {
+      setError(`Gagal mengubah status tampilan: ${err.message}`);
+    }
+  }
+
+  async function addReview() {
+    try {
+      const reviewData = {
+        customer_name: form.customer_name,
+        receipt_number: form.receipt_number,
+        rating: Number(form.rating),
+        comment: form.comment,
+        show_home: form.show_home || false,
+        created_at: new Date().toISOString(),
+      };
+
+      const { data, error } = await supabase
+        .from("reviews")
+        .insert([reviewData])
+        .select();
+
+      if (error) {
+        console.error("Error detail:", error);
+        throw error;
+      }
+
+      setForm({
+        customer_name: "",
+        receipt_number: "",
+        rating: 5,
+        comment: "",
+        show_home: false,
+      });
+      setShowForm(false);
+      setError(null);
+      loadReview();
+    } catch (err) {
+      console.error("Error:", err);
+      setError(`Gagal menambahkan review: ${err.message}`);
+    }
+  }
+
+  async function deleteReview(id) {
+    if (window.confirm("Apakah Anda yakin ingin menghapus review ini?")) {
+      try {
+        const { error } = await supabase
+          .from("reviews")
+          .delete()
+          .eq("id", id);
+
+        if (error) throw error;
+        loadReview();
+        setError(null);
+      } catch (err) {
+        setError(`Gagal menghapus review: ${err.message}`);
+      }
+    }
+  }
+
+  const handleViewDetail = (review) => {
+    setSelectedReview(review);
+    setShowDetailModal(true);
+  };
+
+  const filtered = reviews
+    .filter((item) => {
+      if (!query) return true;
+      const q = query.toLowerCase();
+      return (
+        item.customer_name?.toLowerCase().includes(q) ||
+        item.receipt_number?.toLowerCase().includes(q) ||
+        item.comment?.toLowerCase().includes(q)
+      );
+    })
+    .filter((item) => {
+      if (filter === "shown") return item.show_home === true;
+      if (filter === "hidden") return item.show_home === false;
+      if (filter === "5star") return Number(item.rating) === 5;
+      return true;
+    });
 
   return (
-    /* PERBAIKAN: Hapus max-width jika ada, gunakan w-full dan p-4 atau p-6 saja */
-    <div className="w-full bg-[#f8fafc] min-h-screen p-4 md:p-6 space-y-6 animate-fade-in">
-      
-      {/* 1. TOP STATS - Grid 4 Kolom tetap memenuhi lebar */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        {stats.map((s, i) => (
-          <div key={i} className="bg-[#5da5e8] p-5 rounded-xl shadow-sm text-white relative overflow-hidden group">
-            <div className="z-10 relative">
-              <div className="flex justify-between items-start">
-                <span className="text-2xl opacity-40 group-hover:scale-110 transition-transform">{s.icon}</span>
-                <span className="text-[10px] bg-white/20 px-2 py-1 rounded-full font-bold">{s.trend}</span>
-              </div>
-              <div className="mt-3">
-                <h3 className="text-2xl md:text-3xl font-extrabold">{s.value}</h3>
-                <p className="text-[10px] font-medium opacity-80 uppercase tracking-widest">{s.label}</p>
-              </div>
-            </div>
-            <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/10 rounded-full blur-2xl"></div>
-          </div>
-        ))}
-      </div>
+    <div className="flex min-h-screen bg-slate-50 w-full text-left">
+      <div className="flex-1 px-6 py-6 overflow-x-hidden">
+        
+        <h1 className="text-3xl font-bold text-gray-800 mb-1">Ulasan Pelanggan</h1>
+        <p className="text-gray-500 text-sm mb-6">Moderasi Ulasan & Feedback</p>
 
-      {/* 2. GRAFIK UTAMA - Gunakan lg:col-span-8 untuk area chart agar lebih lebar */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <div className="flex justify-between items-start mb-6">
-            <div>
-              <h4 className="text-gray-800 font-bold text-lg">Produksi Laundry (Kg)</h4>
-              <p className="text-xs text-gray-400 mt-1 flex gap-4">
-                <span><b className="text-blue-500">●</b> Kiloan</span>
-                <span><b className="text-blue-900">●</b> Satuan/Dry Clean</span>
-              </p>
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+        )}
+
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="bg-blue-600 text-white px-5 py-2.5 rounded-lg mb-5 hover:bg-blue-700 transition-colors text-sm font-medium cursor-pointer"
+        >
+          + Tambah Review
+        </button>
+
+        {showForm && (
+          <div className="bg-white p-5 rounded-xl shadow mb-6 w-full">
+            <h2 className="font-bold text-xl mb-4">Tambah Review</h2>
+
+            <input
+              className="border p-3 rounded-lg w-full mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Nama pelanggan"
+              value={form.customer_name}
+              onChange={(e) =>
+                setForm({ ...form, customer_name: e.target.value })
+              }
+            />
+
+            <input
+              className="border p-3 rounded-lg w-full mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Nomor resi"
+              value={form.receipt_number}
+              onChange={(e) =>
+                setForm({ ...form, receipt_number: e.target.value })
+              }
+            />
+
+            <select
+              className="border p-3 rounded-lg w-full mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={form.rating}
+              onChange={(e) =>
+                setForm({ ...form, rating: Number(e.target.value) })
+              }
+            >
+              <option value="5">⭐⭐⭐⭐⭐</option>
+              <option value="4">⭐⭐⭐⭐</option>
+              <option value="3">⭐⭐⭐</option>
+              <option value="2">⭐⭐</option>
+              <option value="1">⭐</option>
+            </select>
+
+            <textarea
+              className="border p-3 rounded-lg w-full mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Komentar"
+              rows="3"
+              value={form.comment}
+              onChange={(e) => setForm({ ...form, comment: e.target.value })}
+            />
+
+            <div className="flex items-center mb-3">
+              <input
+                type="checkbox"
+                id="show_home"
+                checked={form.show_home}
+                onChange={(e) =>
+                  setForm({ ...form, show_home: e.target.checked })
+                }
+                className="mr-2 w-4 h-4"
+              />
+              <label htmlFor="show_home" className="text-sm">
+                Tampilkan di Beranda
+              </label>
             </div>
-            <button className="text-gray-400 hover:text-blue-500"><BsArrowUpRight /></button>
+
+            <div className="flex gap-2">
+              <button
+                onClick={addReview}
+                className="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700 transition-colors cursor-pointer"
+              >
+                Simpan Review
+              </button>
+              <button
+                onClick={() => {
+                  setShowForm(false);
+                  setForm({
+                    customer_name: "",
+                    receipt_number: "",
+                    rating: 5,
+                    comment: "",
+                    show_home: false,
+                  });
+                }}
+                className="bg-gray-500 text-white px-5 py-2 rounded-lg hover:bg-gray-600 transition-colors cursor-pointer"
+              >
+                Batal
+              </button>
+            </div>
           </div>
-          <div className="h-[320px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={dataProduksi}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="name" fontSize={11} tick={{fill: '#94a3b8'}} axisLine={false} />
-                <YAxis fontSize={11} tick={{fill: '#94a3b8'}} axisLine={false} />
-                <Tooltip />
-                <Area type="monotone" dataKey="kilo" stroke="#5da5e8" strokeWidth={3} fill="#5da5e8" fillOpacity={0.1} />
-                <Area type="monotone" dataKey="satuan" stroke="#1e3a8a" strokeWidth={3} fill="#1e3a8a" fillOpacity={0.2} />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+        )}
+
+        {/* Filter Section */}
+        <div className="flex flex-wrap items-center gap-2 mb-5">
+          <input
+            className="border rounded-lg px-4 py-2.5 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            placeholder="Search nama pelanggan, no resi..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+
+          <button
+            onClick={() => setFilter("all")}
+            className={`px-4 py-2 rounded-lg transition-colors text-sm cursor-pointer ${
+              filter === "all" 
+                ? "bg-blue-600 text-white" 
+                : "bg-white border text-gray-700 hover:bg-gray-50"
+            }`}
+          >
+            Semua
+          </button>
+
+          <button
+            onClick={() => setFilter("shown")}
+            className={`px-4 py-2 rounded-lg transition-colors text-sm cursor-pointer ${
+              filter === "shown" 
+                ? "bg-blue-600 text-white" 
+                : "bg-white border text-gray-700 hover:bg-gray-50"
+            }`}
+          >
+            Ditampilkan
+          </button>
+
+          <button
+            onClick={() => setFilter("hidden")}
+            className={`px-4 py-2 rounded-lg transition-colors text-sm cursor-pointer ${
+              filter === "hidden" 
+                ? "bg-blue-600 text-white" 
+                : "bg-white border text-gray-700 hover:bg-gray-50"
+            }`}
+          >
+            Disembunyikan
+          </button>
+
+          <button
+            onClick={() => setFilter("5star")}
+            className={`px-4 py-2 rounded-lg transition-colors text-sm cursor-pointer ${
+              filter === "5star" 
+                ? "bg-blue-600 text-white" 
+                : "bg-white border text-gray-700 hover:bg-gray-50"
+            }`}
+          >
+            Bintang 5
+          </button>
         </div>
 
-        {/* Status Hari Ini - lg:col-span-4 */}
-        <div className="lg:col-span-4 bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
-          <h4 className="text-gray-800 font-bold text-lg">Status Laundry Hari Ini</h4>
-          <div className="h-[250px] relative">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={[{v:65}, {v:35}]} innerRadius={75} outerRadius={95} dataKey="v" startAngle={90} endAngle={450}>
-                  <Cell fill="#5da5e8" />
-                  <Cell fill="#f1f5f9" />
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-               <span className="text-sm font-bold text-gray-400 uppercase">Selesai</span>
-               <span className="text-4xl font-black text-gray-800">65%</span>
-            </div>
-          </div>
-          <div className="space-y-3">
-             <div className="flex justify-between text-xs">
-                <span className="text-gray-500">Antrean Proses</span>
-                <span className="font-bold text-orange-500">12 Order</span>
-             </div>
-             <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-                <div className="bg-orange-400 h-full w-[40%]"></div>
-             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 3. TABEL & SIDEBAR */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="p-6 border-b border-gray-50 flex justify-between items-center">
-            <h4 className="font-bold text-gray-800 text-lg">Antrean Order Terbaru</h4>
-            <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg text-[10px] font-bold">LIVE UPDATE</span>
-          </div>
-          <div className="overflow-x-auto w-full">
-            <table className="w-full text-left">
-              <thead className="bg-gray-50 text-gray-400 text-[10px] uppercase tracking-wider">
-                <tr>
-                  <th className="p-5">Pelanggan</th>
-                  <th className="p-5">Layanan</th>
-                  <th className="p-5 text-center">Status</th>
-                  <th className="p-5 text-right">Total</th>
+        {/* Table Section */}
+        <div className="bg-white rounded-xl shadow overflow-hidden w-full">
+          <div className="overflow-x-auto">
+            <table className="w-full table-auto">
+              <thead>
+                <tr className="border-b bg-gray-50">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">NO</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">PELANGGAN</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">NO RESI</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">RATING</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">KOMENTAR</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">TAMPILKAN</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">AKSI</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 text-sm">
-                {[
-                  { name: "Della Wijaya", service: "Cuci Lipat (5kg)", status: "Proses", price: "Rp 35.000" },
-                  { name: "Andi Saputra", service: "Bedcover King", status: "Selesai", price: "Rp 45.000" },
-                  { name: "Siti Aminah", service: "Dry Clean Jas", status: "Antri", price: "Rp 60.000" },
-                  { name: "Budi Rejeki", service: "Express 6 Jam", status: "Proses", price: "Rp 55.000" },
-                ].map((order, i) => (
-                  <tr key={i} className="hover:bg-blue-50/30 transition-colors">
-                    <td className="p-5 font-bold text-gray-700">{order.name}</td>
-                    <td className="p-5 text-gray-500">{order.service}</td>
-                    <td className="p-5 text-center">
-                      <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase 
-                        ${order.status === 'Selesai' ? 'bg-green-100 text-green-600' : 
-                          order.status === 'Proses' ? 'bg-blue-100 text-blue-600' : 'bg-orange-100 text-orange-600'}`}>
-                        {order.status}
-                      </span>
+              <tbody>
+                {loading && (
+                  <tr>
+                    <td colSpan="7" className="p-5 text-center text-gray-500">
+                      <div className="flex justify-center items-center">
+                        <svg className="animate-spin h-5 w-5 mr-3 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Loading...
+                      </div>
                     </td>
-                    <td className="p-5 text-right font-bold text-gray-600">{order.price}</td>
+                  </tr>
+                )}
+
+                {filtered.map((item, index) => (
+                  <tr key={item.id} className="border-b hover:bg-gray-50 transition-colors">
+                    <td className="px-4 py-3 text-sm text-gray-500 whitespace-nowrap">{index + 1}</td>
+                    <td className="px-4 py-3">
+                      <span className="font-medium text-gray-800">{item.customer_name}</span>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">{item.receipt_number}</td>
+                    <td className="px-4 py-3 text-sm whitespace-nowrap">{'⭐'.repeat(item.rating)}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600">
+                      {item.comment || "-"}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      {item.show_home ? (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          ✓ TAYANG
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                          ⊗ SEMBUNYI
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="flex gap-1.5">
+                        {/* TOMBOL MODERASI BARU: TAYANG / SEMBUNYIKAN ASINKRON */}
+                        <button
+                          onClick={() => toggleShowHome(item.id, item.show_home)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer text-white ${
+                            item.show_home 
+                              ? "bg-amber-500 hover:bg-amber-600" 
+                              : "bg-emerald-600 hover:bg-emerald-700"
+                          }`}
+                        >
+                          {item.show_home ? "Sembunyikan" : "Tayangkan"}
+                        </button>
+                        
+                        <button
+                          onClick={() => handleViewDetail(item)}
+                          className="bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 text-xs transition-colors cursor-pointer"
+                        >
+                          Detail
+                        </button>
+                        <button
+                          onClick={() => deleteReview(item.id)}
+                          className="bg-red-600 text-white px-3 py-1.5 rounded-lg hover:bg-red-700 text-xs transition-colors cursor-pointer"
+                        >
+                          Hapus
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
+
+                {!loading && filtered.length === 0 && (
+                  <tr>
+                    <td colSpan="7" className="p-8 text-center text-gray-500">
+                      <div className="flex flex-col items-center">
+                        <span className="text-4xl mb-2">📋</span>
+                        <p className="text-sm">Tidak ada data review</p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         </div>
+      </div>
 
-        {/* Sidebar */}
-        <div className="space-y-6">
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h4 className="font-bold text-gray-800 mb-6 flex items-center gap-2">
-              <BsClockHistory className="text-blue-500" /> Log Aktivitas Laundry
-            </h4>
-            <div className="space-y-6 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-100">
-              <div className="relative pl-8">
-                <div className="absolute left-1.5 top-1 w-3 h-3 rounded-full border-2 border-white shadow-sm bg-blue-500"></div>
-                <p className="text-xs font-bold text-gray-800">Kurir Pickup Order #098</p>
-                <p className="text-[10px] text-gray-400">3 menit yang lalu</p>
-              </div>
-              <div className="relative pl-8">
-                <div className="absolute left-1.5 top-1 w-3 h-3 rounded-full border-2 border-white shadow-sm bg-green-500"></div>
-                <p className="text-xs font-bold text-gray-800">Mesin 02: Siklus Cuci Selesai</p>
-                <p className="text-[10px] text-gray-400">12 menit yang lalu</p>
+      {/* Modal Detail */}
+      {showDetailModal && selectedReview && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="border-b p-6">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-800">Detail Pesanan</h2>
+                  <p className="text-sm text-gray-500 mt-1">
+                    <span className="font-semibold">{selectedReview.receipt_number}</span>
+                    {" • Diterima pada "}
+                    {selectedReview.created_at 
+                      ? new Date(selectedReview.created_at).toLocaleDateString('id-ID', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric'
+                        })
+                      : 'Tanggal tidak tersedia'
+                    }
+                    {" pukul "}
+                    {selectedReview.created_at 
+                      ? new Date(selectedReview.created_at).toLocaleTimeString('id-ID', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })
+                      : '--:--'
+                    }
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowDetailModal(false);
+                    setSelectedReview(null);
+                  }}
+                  className="text-gray-400 hover:text-gray-600 text-2xl cursor-pointer"
+                >
+                  ✕
+                </button>
               </div>
             </div>
-          </div>
 
-          <div className="bg-gradient-to-br from-blue-700 to-blue-900 p-6 rounded-xl shadow-lg text-white">
-            <div className="flex justify-between items-center mb-4">
-              <BsFillBoxSeamFill size={24} className="text-blue-300" />
-              <span className="text-[10px] font-bold tracking-widest opacity-60">KASIR CEPAT</span>
+            <div className="p-6">
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                  Informasi Pelanggan
+                </h3>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <p className="font-semibold text-gray-800">{selectedReview.customer_name}</p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Alamat: {selectedReview.address || "Jl. Sukajadi No. 22, Pekanbaru"}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Catatan Jemput: {selectedReview.notes || "Tidak ada catatan"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                  Rincian Cucian
+                </h3>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="flex justify-between">
+                    <span className="text-gray-700">Cuci Komplit (Reguler)</span>
+                    <span className="font-semibold">5 kg</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                  Ringkasan Tagihan
+                </h3>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="flex justify-between py-2 border-b border-gray-200">
+                    <span className="text-gray-600">No. Resi</span>
+                    <span className="font-semibold">{selectedReview.receipt_number}</span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b border-gray-200">
+                    <span className="text-gray-600">Layanan</span>
+                    <span className="font-semibold">Cuci Komplit (Reguler)</span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b border-gray-200">
+                    <span className="text-gray-600">Status</span>
+                    <span className="font-semibold text-green-600">Selesai</span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b border-gray-200">
+                    <span className="text-gray-600">Rating</span>
+                    <span className="font-semibold">{'⭐'.repeat(selectedReview.rating)}</span>
+                  </div>
+                  <div className="flex justify-between py-2">
+                    <span className="text-gray-600">Komentar</span>
+                    <span className="font-semibold text-right max-w-xs">
+                      {selectedReview.comment || "Tidak ada komentar"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex justify-between items-center bg-blue-50 rounded-lg p-4">
+                  <span className="text-lg font-bold text-gray-800">Total</span>
+                  <span className="text-2xl font-bold text-blue-600">
+                    Rp 110.000
+                  </span>
+                </div>
+              </div>
             </div>
-            <p className="text-xs opacity-80">Saldo Kas Hari Ini</p>
-            <h3 className="text-2xl font-black mt-1">Rp 1.420.500</h3>
-            <div className="grid grid-cols-2 gap-2 mt-6">
-               <button className="py-2 bg-white/10 hover:bg-white/20 text-[10px] font-bold rounded-lg transition-all border border-white/20">+ ORDER</button>
-               <button className="py-2 bg-blue-500 hover:bg-blue-600 text-[10px] font-bold rounded-lg transition-all shadow-lg">CATAT</button>
+
+            <div className="border-t p-6 bg-gray-50 rounded-b-2xl">
+              <button
+                onClick={() => {
+                  setShowDetailModal(false);
+                  setSelectedReview(null);
+                }}
+                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold cursor-pointer"
+              >
+                Tutup
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
