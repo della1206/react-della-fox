@@ -4,6 +4,7 @@ import { BsEye, BsPencilSquare, BsTrash, BsArrowLeft, BsPlusLg } from "react-ico
 export default function Orders() {
   const [currentView, setCurrentView] = useState("list"); // 'list' | 'detail' | 'edit' | 'create'
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [editOrderForm, setEditOrderForm] = useState(null);
   const [activeFilter, setActiveFilter] = useState("Semua");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -71,8 +72,35 @@ export default function Orders() {
     }
   };
 
-  const handleUpdateStatus = (status) => {
-    setOrders(orders.map(o => o.id === selectedOrder.id ? { ...o, status } : o));
+  const openEditOrder = (order) => {
+    setSelectedOrder(order);
+    setEditOrderForm({
+      customer: order.customer,
+      address: order.address,
+      service: order.service,
+      weight: order.weight.replace(/[^0-9.]/g, ""),
+      weightUnit: order.weight.includes("pcs") ? "pcs" : "kg",
+      status: order.status,
+      total: order.total.replace(/[^0-9]/g, ""),
+    });
+    setCurrentView("edit");
+  };
+
+  const handleSaveEditOrder = (e) => {
+    e.preventDefault();
+
+    const updatedOrder = {
+      ...selectedOrder,
+      customer: editOrderForm.customer,
+      address: editOrderForm.address,
+      service: editOrderForm.service,
+      weight: `${editOrderForm.weight} ${editOrderForm.weightUnit}`,
+      status: editOrderForm.status,
+      total: `Rp ${Number(editOrderForm.total || 0).toLocaleString("id-ID")}`,
+    };
+
+    setOrders(orders.map(o => o.id === selectedOrder.id ? updatedOrder : o));
+    setSelectedOrder(updatedOrder);
     setCurrentView("list");
   };
 
@@ -220,8 +248,9 @@ export default function Orders() {
                             <BsEye />
                           </button>
                           <button 
-                            onClick={() => { setSelectedOrder(o); setCurrentView("edit"); }}
+                            onClick={() => openEditOrder(o)}
                             className="text-orange-400 hover:text-orange-600 text-base"
+                            aria-label={`Edit pesanan ${o.id}`}
                           >
                             <BsPencilSquare />
                           </button>
@@ -360,79 +389,131 @@ export default function Orders() {
       )}
 
       {/* ================= VIEW 3: EDIT PESANAN ================= */}
-      {currentView === "edit" && selectedOrder && (
+      {currentView === "edit" && selectedOrder && editOrderForm && (
         <div className="space-y-6 animate-fade-in">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <button 
-                onClick={() => setCurrentView("list")} 
-                className="w-10 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-50 shadow-sm"
-              >
-                <BsArrowLeft />
-              </button>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-2xl font-bold text-gray-800">Edit Pesanan</h2>
-                  <span className="bg-blue-50 text-blue-600 px-3 py-0.5 rounded-lg text-sm font-bold">{selectedOrder.id}</span>
-                </div>
-                <p className="text-xs text-gray-400 mt-0.5">Diterima pada {selectedOrder.date} pukul {selectedOrder.time}</p>
-              </div>
-            </div>
-            
-            <div className="bg-amber-50 border border-amber-200 p-2 px-4 rounded-xl flex items-center gap-3">
-              <span className="text-xs font-bold text-amber-700">Ubah Status:</span>
-              <select 
-                value={selectedOrder.status}
-                onChange={(e) => handleUpdateStatus(e.target.value)}
-                className="bg-white border border-gray-200 text-xs rounded-lg p-1.5 font-semibold text-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {statusOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Form Informasi */}
-          <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-4">
-            <h3 className="text-base font-bold text-gray-800 border-b pb-3">Informasi Pelanggan</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-              <div className="flex items-start gap-3">
-                <span className="text-xl text-gray-400 mt-0.5">👤</span>
-                <div>
-                  <div className="text-xs text-gray-400">Nama Pelanggan</div>
-                  <div className="font-bold text-gray-800 mt-0.5">{selectedOrder.customer}</div>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="text-xl text-gray-400 mt-0.5">📍</span>
-                <div>
-                  <div className="text-xs text-gray-400">Alamat & Catatan Jemput</div>
-                  <div className="font-bold text-gray-800 mt-0.5">{selectedOrder.address}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Rincian Cucian */}
-          <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-4">
-            <h3 className="text-base font-bold text-gray-800 border-b pb-3">Rincian Cucian</h3>
-            <div className="bg-gray-50/70 p-4 rounded-xl flex justify-between items-center text-sm font-semibold">
-              <div className="flex items-center gap-2 text-green-600">
-                <span>✓</span> {selectedOrder.service}
-              </div>
-              <div className="text-gray-800">{selectedOrder.weight}</div>
-            </div>
-          </div>
-
-          <div className="flex justify-end">
+          <div className="flex items-center gap-4">
             <button 
-              onClick={() => setCurrentView("list")}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition-all"
+              onClick={() => setCurrentView("list")} 
+              className="w-10 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-50 shadow-sm"
             >
-              ✓ Selesai Mengedit
+              <BsArrowLeft />
             </button>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-2xl font-bold text-gray-800">Edit Pesanan</h2>
+                <span className="bg-blue-50 text-blue-600 px-3 py-0.5 rounded-lg text-sm font-bold">{selectedOrder.id}</span>
+              </div>
+              <p className="text-xs text-gray-400 mt-0.5">Diterima pada {selectedOrder.date} pukul {selectedOrder.time}</p>
+            </div>
           </div>
+
+          <form onSubmit={handleSaveEditOrder} className="space-y-6">
+            <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-4">
+              <h3 className="text-base font-bold text-gray-800 border-b pb-3">Informasi Pelanggan</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-500">Nama Pelanggan</label>
+                  <input 
+                    type="text"
+                    className="p-3 bg-gray-50/70 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-100 text-sm font-semibold"
+                    value={editOrderForm.customer}
+                    onChange={(e) => setEditOrderForm({...editOrderForm, customer: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className="flex flex-col space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-500">Alamat & Catatan Jemput</label>
+                  <input 
+                    type="text"
+                    className="p-3 bg-gray-50/70 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-100 text-sm font-semibold"
+                    value={editOrderForm.address}
+                    onChange={(e) => setEditOrderForm({...editOrderForm, address: e.target.value})}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-4">
+              <h3 className="text-base font-bold text-gray-800 border-b pb-3">Rincian Cucian & Status</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div className="flex flex-col space-y-1.5 lg:col-span-2">
+                  <label className="text-xs font-semibold text-gray-500">Jenis Layanan</label>
+                  <select
+                    className="p-3 bg-gray-50/70 border border-gray-200 rounded-xl text-sm font-semibold outline-none focus:ring-2 focus:ring-blue-100 text-gray-700"
+                    value={editOrderForm.service}
+                    onChange={(e) => setEditOrderForm({...editOrderForm, service: e.target.value})}
+                  >
+                    <option>Cuci Komplit (Reguler)</option>
+                    <option>Cuci Komplit (Kilat)</option>
+                    <option>Cuci Kering + Setrika (Reguler)</option>
+                    <option>Dry Clean Jas & Gaun</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-500">Berat / Jumlah</label>
+                  <input 
+                    type="number"
+                    className="p-3 bg-gray-50/70 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-100 text-sm font-semibold"
+                    value={editOrderForm.weight}
+                    onChange={(e) => setEditOrderForm({...editOrderForm, weight: e.target.value})}
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-500">Satuan</label>
+                  <select
+                    className="p-3 bg-gray-50/70 border border-gray-200 rounded-xl text-sm font-semibold outline-none focus:ring-2 focus:ring-blue-100 text-gray-700"
+                    value={editOrderForm.weightUnit}
+                    onChange={(e) => setEditOrderForm({...editOrderForm, weightUnit: e.target.value})}
+                  >
+                    <option value="kg">kg</option>
+                    <option value="pcs">pcs</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-500">Total Tagihan</label>
+                  <input 
+                    type="number"
+                    className="p-3 bg-gray-50/70 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-100 text-sm font-semibold"
+                    value={editOrderForm.total}
+                    onChange={(e) => setEditOrderForm({...editOrderForm, total: e.target.value})}
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col space-y-1.5">
+                <label className="text-xs font-semibold text-gray-500">Status Pesanan</label>
+                <select
+                  className="p-3 bg-amber-50/70 border border-amber-200 rounded-xl text-sm font-semibold outline-none focus:ring-2 focus:ring-blue-100 text-gray-700"
+                  value={editOrderForm.status}
+                  onChange={(e) => setEditOrderForm({...editOrderForm, status: e.target.value})}
+                >
+                  {statusOptions.map((opt) => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <button 
+                type="button"
+                onClick={() => setCurrentView("list")}
+                className="bg-white border border-gray-200 text-gray-600 font-bold px-6 py-2.5 rounded-xl transition-all hover:bg-gray-50 shadow-sm"
+              >
+                Batal
+              </button>
+              <button 
+                type="submit"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition-all"
+              >
+                Simpan Perubahan
+              </button>
+            </div>
+          </form>
         </div>
       )}
 
@@ -524,6 +605,9 @@ export default function Orders() {
           </div>
         </div>
       )}
+
     </div>
   );
 }
+
+
