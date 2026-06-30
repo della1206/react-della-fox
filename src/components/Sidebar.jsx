@@ -8,7 +8,7 @@ import {
   BsExclamationTriangle, 
   BsLock, 
   BsSlashCircle, 
-  BsPuzzle,
+  BsDropletHalf,
   BsLightningCharge,
   BsStar // Tambahkan icon untuk Ulasan
 } from "react-icons/bs";
@@ -22,7 +22,7 @@ export default function Sidebar() {
     { name: "Dashboard", path: "/dashboard", icon: <BsSpeedometer2 /> },
     { name: "Orders", path: "/orders", icon: <BsClipboardData /> },
     { name: "Products", path: "/products", icon: <BsBoxSeam /> }, 
-    { name: "Components", path: "/components", icon: <BsPuzzle /> }, 
+    { name: "Layanan", path: "/components", icon: <BsDropletHalf /> }, 
     { name: "Pelanggan", path: "/Pelanggan", icon: <BsPeople /> },
     { name: "Ulasan", path: "/admin-review", icon: <BsStar /> }, // <-- Menu Ulasan
     { name: "Kelola User", path: "/admin-user", icon: <BsLightningCharge /> },
