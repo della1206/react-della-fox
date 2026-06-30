@@ -23,14 +23,9 @@ export default function MemberConfirmation() {
     email: "",
     noHp: "",
     alamat: "",
-    password: "",
-    confirmPassword: "",
     metodePembayaran: "transfer",
     catatan: ""
   });
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -43,16 +38,6 @@ export default function MemberConfirmation() {
     e.preventDefault();
     
     // Validasi
-    if (formData.password !== formData.confirmPassword) {
-      alert("Password dan Konfirmasi Password tidak sama!");
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      alert("Password minimal 6 karakter!");
-      return;
-    }
-
     if (!formData.nama || !formData.email || !formData.noHp || !formData.alamat) {
       alert("Semua field wajib diisi!");
       return;
@@ -82,12 +67,11 @@ export default function MemberConfirmation() {
         email: formData.email,
         noHp: formData.noHp,
         alamat: formData.alamat,
-        password: formData.password,
         paket: selectedPackage?.packageName || "Reguler",
         harga: selectedPackage?.price || "Rp 50.000",
         metodePembayaran: formData.metodePembayaran,
         catatan: formData.catatan,
-        status: "aktif",
+        status: "active",
         createdAt: new Date().toISOString()
       };
 

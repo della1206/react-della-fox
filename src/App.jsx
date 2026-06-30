@@ -23,6 +23,7 @@ const MemberPackage = React.lazy(() => import("./pages/MemberPackage"));
 const LoginMember = React.lazy(() => import("./pages/LoginMember"));
 const RegisterMember = React.lazy(() => import("./pages/RegisterMember"));
 const MemberConfirmation = React.lazy(() => import("./pages/MemberConfirmation"));
+const MemberSuccess = React.lazy(() => import("./pages/MemberSuccess"));
 // Import AdminReview
 const AdminReview = React.lazy(() => import("./pages/AdminReview")); // Sesuaikan path dengan lokasi file Anda
 
@@ -55,6 +56,7 @@ export default function App() {
         <Route path="/register-member" element={<RegisterMember />} />
         <Route path="/member-package" element={<MemberPackage />} />
         <Route path="/member-confirmation" element={<MemberConfirmation />} />
+        <Route path="/member-success" element={<MemberSuccess />} />
 
         {/* ==================== HALAMAN ADMIN ==================== */}
         <Route element={<AuthLayout />}>
